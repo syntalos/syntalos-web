@@ -26,11 +26,11 @@ menu:
     - name: API
       pageRef: /api
       weight: 3
-    - name: About
-      pageRef: /about
-      weight: 4
-    - name: Contact ↗
-      url: "https://github.com/ximion"
+    #- name: About
+    #  pageRef: /about
+    #  weight: 4
+    - name: Discussion ↗
+      url: "https://github.com/syntalos/syntalos/discussions"
       weight: 5
     - name: Search
       weight: 5

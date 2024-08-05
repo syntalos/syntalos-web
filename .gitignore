@@ -2,3 +2,8 @@
 public/
 resources/
 .hugo_build.lock
+
+# Imported data
+_temp/
+static/images/modules-src/
+content/docs/pysy_mlink_api_embed.fragment

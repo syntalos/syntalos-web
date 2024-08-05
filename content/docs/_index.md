@@ -1,18 +1,14 @@
 ---
 title: Documentation
-next: first-page
+next: docs/intro
 ---
 
-This is a demo of the theme's documentation layout.
+Welcome to the Syntalos documentation!
 
-## Hello, World!
+## Explore
 
-```go {filename="main.go"}
-package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, World!")
-}
-```
+{{< cards >}}
+  {{< card link="setup/install/" title="Install Syntalos" icon="download" >}}
+  {{< card link="intro/" title="Introduction" icon="newspaper" >}}
+  {{< card link="modules/" title="Modules" icon="view-grid" >}}
+{{< /cards >}}

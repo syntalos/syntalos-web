@@ -1,0 +1,25 @@
+ 
+.align-right {
+  text-align: right;
+  float: right;
+  margin-left: 2px;
+}
+
+.docutils.literal {
+  overflow-wrap: break-word;
+  border-radius: 0.375rem;
+  border-width: 1px;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  --tw-border-opacity: 0.04;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.03;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  padding-left: .25em;
+  padding-right: .25em;
+  font-size: .9em;
+
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+}
