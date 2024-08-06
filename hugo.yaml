@@ -26,6 +26,9 @@ menu:
     - name: API
       pageRef: /api
       weight: 3
+    - name: Download
+      pageRef: /get
+      weight: 4
     #- name: About
     #  pageRef: /about
     #  weight: 4

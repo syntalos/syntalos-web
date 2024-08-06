@@ -1,5 +1,5 @@
 ---
-title: Python Syntalos Module API
+title: Python Module API
 type: docs
 prev: docs/timesync-verification
 ---

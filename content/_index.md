@@ -22,6 +22,7 @@ to make more advanced changes.
 ## Explore
 
 {{< cards >}}
-  {{< card link="docs" title="Docs" icon="book-open" >}}
-  {{< card link="about" title="About" icon="user" >}}
+  {{< card link="docs" title="Documentation" icon="book-open" >}}
+  {{< card link="tutorials" title="Tutorials" icon="support" >}}
+  {{< card link="get" title="Get Syntalos" icon="download" >}}
 {{< /cards >}}
