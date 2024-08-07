@@ -12,6 +12,7 @@ import subprocess
 import requests
 import zipfile
 import stat
+import glob
 from argparse import ArgumentParser
 from tempfile import NamedTemporaryFile
 
@@ -180,7 +181,21 @@ class SyWebBuilder:
         if base_url:
             cmd.extend(['--baseURL', base_url])
 
-        subprocess.check_call(cmd)
+        subprocess.check_call(cmd, cwd=self._root_dir)
+        result_dir = os.path.join(self._root_dir, 'public')
+
+        # delete files we don't want
+        rm_files = glob.glob(os.path.join(result_dir, 'favicon-*.png'), recursive=False)
+        rm_files.extend(glob.glob(os.path.join(result_dir, 'android-chrome-*.png'), recursive=False))
+        rm_files.append(os.path.join(result_dir, 'favicon-dark.svg'))
+        rm_files.append(os.path.join(result_dir, 'apple-touch-icon.png'))
+
+        for fname in rm_files:
+            if not os.path.isfile(fname):
+                continue
+            fname_slug = fname.replace(result_dir, '')
+            print(f'Removing: {fname_slug}')
+            os.remove(fname)
 
         return True
 
