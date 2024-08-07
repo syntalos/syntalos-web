@@ -1,5 +1,5 @@
 ---
-title: Installation on Windows
+title: Testing on Windows
 type: docs
 prev: docs/install/install
 ---
