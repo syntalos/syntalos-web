@@ -24,9 +24,9 @@ We will change that in the next step.
 In order to control other modules from our Python script module, we need it to have an output
 port to even emit data. Double-click the Python module or click on *Settings* after selecting it).
 
-A new window opens which lets you edit the Python code. We ignore that for now and click on
-*Ports → Edit* in the window's main menu. A new *Port Editor* dialog opens, which allows for adding
-new ports to our script module.
+A new window opens which lets you edit the Python code. We ignore that for now and click on the
+*Edit Ports* button in the window's toolbar at the top. A new *Port Editor* dialog opens, which allows
+for adding new ports to our script module.
 Since we want to add an output port, click on *Add Output Port*.
 
 In the next step, you will be asked which kind of data the output port emits. Select `ControlCommand`
@@ -42,22 +42,25 @@ input port of your *Audio Source* as usual!
 
 ## 3. Module coding basics
 
-Now we can look at the Python script itself! The default script is quite large due to its many annotations, but
-using it is really quite simple: 4 functions exists that Syntalos may call at different stages of an experiment run.
+Now we can look at the Python script itself! The default script is larger than it needs to be due to annotations
+to help you get started. Writing the script is a lot simpler than it may first appear though:
+4 functions exists that Syntalos may call at different stages of an experiment run.
 The `prepare()` function is called when the experimence is started, but before all modules are ready, the
-`start()` function is called immediately before data starts being acquired, `loop` is called continuously during
-the experiment until the function returns `False`, and `stop()` is called when the experiment is stopped.
-We are primarily concerned with the `loop()` function here, as we do not need to prepare any data or device
-in our script. Interaction with Syntalos happens via the `syio` module, which is imported by default.
+`start()` function is called immediately before data starts being acquired, `run` is called when the experiment
+is started and mainly handles communication with Syntalos, and `stop()` is called when the experiment is stopped.
+We are primarily concerned with the `prepare()` function here, as we do not need to prepare any data or device
+in our script. Interaction with Syntalos happens via the `syntalos_mlink` module, which is imported by default
+as `syl`.
 
 First, we need to get a Python reference to the `control-out` output port that we just defined in the port editor.
-This needs to happen before even `prepare()` is called, so we put it at the top of the Python file:
+This should happen before even `prepare()` is called, so we put it at the top of the Python file:
 
 ```python
-oport = sy.get_output_port('control-out')
+oport = syl.get_output_port('control-out')
 ```
 
-Using `get_output_port()` with the internal port name, we now can emit messages on this port.
+The `get_output_port()` method takes the internal port name as parameter, that we previously defined in the port editor.
+With the reference we obtained on the output port, we can now can emit messages on this port.
 
 ## 4. Controlling a module
 
@@ -67,45 +70,56 @@ This is useful for example if you only want to record a video for a selected amo
 For now though, we just want to emit a 2 sec audio cue every 5 seconds. This can be done with this simple snippet
 of Python code (this is the whole script file):
 
-```python {linenos=table,hl_lines=[10,14]}
-import syio as sy
-from syio import InputWaitResult, ControlCommand, ControlCommandKind
+```python {linenos=table,hl_lines=[9,14,16,22]}
+import syntalos_mlink as syl
 
 
-oport = sy.get_output_port('control-out')
+oport = syl.get_output_port('control-out')
 
 
-def loop() -> bool:
-    ctl = ControlCommand()
-    ctl.kind = ControlCommandKind.START
+def start():
+    """Called by Syntalos immediately when the experiment is started."""
+    send_beep()
+
+
+def send_beep():
+    ctl = syl.ControlCommand()
+    ctl.kind = syl.ControlCommandKind.START
     ctl.duration = 2000  # run for 2 sec
-    while True:
-        oport.submit(ctl)
-        sy.wait_sec(5)
-        if not sy.check_running():
-            return False
+    oport.submit(ctl)
 
-    return True
+    if not syl.is_running():
+        return False
+
+    # run again in 5 sec
+    syl.schedule_delayed_call(5 * 1000, send_beep)
 ```
 
-The `loop()` function is called permanently while the experiment runs. We first define a `ControlCommand` that we want to
+The `start()` function is called immediately when the experiment is started and has to complete immediately.
+To launch our custom code, we define a function called `send_beep()` that we run once the experiment was started.
+
+In `send_beep()` we first define a `ControlCommand` that we want to
 send to the *Audio Source*, and tell it to be of kind `START` and instruct it to hold that state for `2000` milliseconds
-before falling back to its previous state.
-Then, we just loop endlessly and submit the control command on our predefined output port `oport`, wait 5 seconds and then
-repeat the process.
-Any datatypes you can use with output ports, and commands you can use on input ports can be found in the
+before falling back to its previous state (via `ctl.duration`).
+
+Using `oport.submit(ctl)`, we send this command out on the previously defined output port `oport`.
+If we are no longer running (if `syl.is_running()` returns `False`), we stop doing anything. If we are still running though,
+we instruct Syntalos to call `send_beep()` again in 5 seconds, via `syl.schedule_delayed_call()`.
+
+Datatypes you can use with output ports, and commands you can use on input ports can be found in the
 [syntalos_mlink API documentation]({{< ref "/docs/pysy-mlink-api" >}}) for reference.
 
 {{< callout type="info" >}}
 While using Python's own wait functions, like `time.sleep()`, is possible for delays, it is recommended to use
-functions from `syio` for that purpose. That way Syntalos knows about the waiting state of the  module,
+functions from `syntalos_mlink` for that purpose. That way Syntalos knows about the waiting state of the  module,
 and can disrupt a sleeping module to stop it instead of waiting for it. It also allows Syntalos to make smarter
 scheduling and queueing decisions.
 {{< /callout >}}
 
-By calling `sy.check_running()` in our endless loop, we can check if the Syntalos experiment is still running, and
-terminate voluntarily in case it is not. Otherwise, Syntalos will interrupt script execution if a script does not react
-in time to a stop request.
+While checking whether we are still running with `syl.is_running()` is not strictly necessary, it allows for a cleaner
+shutdown procedure when Syntalos interrupts the running code at the end of the experiment.
+An alternative to this check would be to implement the `stop()` function, and stop emitting new control commands once that
+function has been called.
 
 ## 5. Run it!
 
