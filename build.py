@@ -185,10 +185,7 @@ class SyWebBuilder:
         result_dir = os.path.join(self._root_dir, 'public')
 
         # delete files we don't want
-        rm_files = glob.glob(os.path.join(result_dir, 'favicon-*.png'), recursive=False)
-        rm_files.extend(glob.glob(os.path.join(result_dir, 'android-chrome-*.png'), recursive=False))
-        rm_files.append(os.path.join(result_dir, 'favicon-dark.svg'))
-        rm_files.append(os.path.join(result_dir, 'apple-touch-icon.png'))
+        rm_files = []
 
         for fname in rm_files:
             if not os.path.isfile(fname):
