@@ -47,7 +47,7 @@ oport_frame = syl.get_output_port('frame-out')
 oport_tab = syl.get_output_port('tablerow-out')
 
 
-def prepare():
+def prepare() -> bool:
     """This function is called before a run is started.
     You can use it for (slow) initializations.
     NOTE: You are *not* able to send output to ports here, or access
@@ -59,6 +59,8 @@ def prepare():
     # set table output metadata
     oport_tab.set_metadata_value('table_header', ['Time Received', 'Frame Time'])
     oport_tab.set_metadata_value('data_name_proposal', 'events/table')
+
+    return True
 
 
 def start():
