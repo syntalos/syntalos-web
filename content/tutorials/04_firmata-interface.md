@@ -37,33 +37,28 @@ You can also add an output port of type `TableRow` named `table-out` for later u
 The we create some boilerplate code for the Python module, which does nothing, for now:
 
 ```python
-import syio as sy
-from syio import InputWaitResult
+import syntalos_mlink as syl
+
 
 fm_iport = sy.get_input_port('firmata-in')
 fm_oport = sy.get_input_port('firmatactl-out')
 tab_oport = sy.get_input_port('table-out')
 
 
-def prepare():
-    pass
-
-
-def start():
-    pass
-
-
-def loop() -> bool:
-    # wait for new input to arrive
-    wait_result = sy.await_new_input()
-    if wait_result == InputWaitResult.CANCELLED:
-        return False
-
-    # return True, so the loop function is called again when new data is available
+def prepare() -> bool:
+    """This function is called before a run is started.
+    You can use it for (slow) initializations."""
     return True
 
 
+def start():
+    """This function is called immediately when a run is started.
+    This function should complete extremely quickly."""
+    pass
+
+
 def stop():
+    """This function is called once a run is stopped."""
     pass
 ```
 
@@ -113,9 +108,8 @@ when we sent the command to get the LED to blink.
 
 This is the code we need to achieve that:
 
-```python {linenos=table,hl_lines=[11,17,23,31]}
-import syio as sy
-from syio import InputWaitResult, ControlCommand, ControlCommandKind
+```python {linenos=table,hl_lines=[10,16,24,33]}
+import syntalos_mlink as syl
 
 
 # constants
@@ -123,37 +117,41 @@ LED_DURATION_MSEC = 250
 LED_INTERVAL_MSEC = 2000
 
 
-fm_iport = sy.get_input_port('firmata-in')
-fm_oport = sy.get_input_port('firmatactl-out')
-tab_oport = sy.get_input_port('table-out')
+fm_iport = syl.get_input_port('firmata-in')
+fm_oport = syl.get_input_port('firmatactl-out')
+tab_oport = syl.get_input_port('table-out')
 
 
-def prepare():
+def prepare() -> bool:
     # set table header and save filename
     tab_oport.set_metadata_value('table_header', ['Time', 'Event'])
     tab_oport.set_metadata_value('data_name_proposal', 'events/led_status')
+
+    return True
 
 
 def start():
     # set pin 8 as LED output pin
     fm_oport.firmata_register_digital_pin(8, 'led1', True)
 
+    # start sending our pulse command periodically
+    trigger_led_pulse()
 
-def loop() -> bool:
-    # loop forever, as we do not need to read any input data
-    while True:
-        tab_oport.submit([sy.time_since_start_msec(),
-                        'led-pulse'])
-        fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
 
-        sy.wait(LED_INTERVAL_MSEC)
-        if not sy.check_running():
-            break
+def trigger_led_pulse():
+    tab_oport.submit([syl.time_since_start_msec(),
+                      'led-pulse'])
+    fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
 
-    # ensure LED is off
+    if not syl.is_running():
+        return False
+
+    # run this function again after some delay
+    syl.schedule_delayed_call(LED_INTERVAL_MSEC, send_beep)
+
+def stop():
+    # ensure LED is off once we stop
     fm_oport.firmata_submit_digital_value('led1', False)
-
-    return False
 ```
 
 Initially, in line 10, we need to fetch references to our input/output ports (using only the latter for now), so we
@@ -168,28 +166,30 @@ we first register pin `8` on the Arduino as digital output pin (adjust this if y
 This example uses convenience methods to handle digital pins. For example, the call to
 `firmata_register_digital_pin()` on the Firmata control port could also be written as:
 ```python
-ctl = sy.new_firmatactl_with_id_name(sy.FirmataCommandKind.NEW_DIG_PIN, 8, 'led1')
+ctl = syl.new_firmatactl_with_id_name(syl.FirmataCommandKind.NEW_DIG_PIN, 8, 'led1')
 ctl.is_output = True
 fm_oport.submit(ctl)
 ```
 Not every action has convenience methods, but the most common operations do.
 {{< /callout >}}
 
-Then, in the `loop()` function the actual logic happens to make the LED blink. Normally, this function is called
-by Syntalos constantly when new data arrives. But since we do not need to wait for incoming data, we first just enter
-an endless `while` loop.
-In it, we send a new table row to the *Table* module for storage & display, using the `sy.time_since_start_msec()` function
+Then, we launch our custom function `trigger_led_pulse()` where the actual logic happens to make the LED blink.
+In it, we send a new table row to the *Table* module for storage & display, using the `syl.time_since_start_msec()` function
 to get the current time since the experiment run was started and naming the event `led-pulse`. You should see these two values
 show up in the table later. Then, we actually send a message to the *Firmata IO* module to instruct it to set the LED pin `HIGH`
-for the time `LED_DURATION_MSEC`. Then we wait using `sy.wait(LED_INTERVAL_MSEC)` until we repeat the process again, and exit
-the loop when the experiment is stopped.
+for the time `LED_DURATION_MSEC`.
+
+To introduce some delay before sending another such command, we instruct the `trigger_led_pulse()` function to be called again
+after `LED_INTERVAL_MSEC` via `syl.schedule_delayed_call(LED_INTERVAL_MSEC, send_beep)`.
+This is repeated until the experiment has been stopped by the user.
 
 {{< callout type="warning" >}}
 Keep in mid that when submitting data on a port, you are **not** calling the respective task immediately - you are
 merely enqueueing an instructions for the other module to act upon at a later time.
 Realistically, Syntalos will execute the queued action instantly with little delay, but Syntalos can not make any
-real-time guarantees. If you need those, consider using dedicated hardware or an FPGA, and control those components
-with Syntalos instead.
+real-time guarantees for inter-module communication.
+If you need those, consider using dedicated hardware or an FPGA, and control those components with Syntalos instead.
+This will give you predictable and reliable latencies.
 {{< /callout >}}
 
 If you hit the *Run* button, the experiment should run and the LED should blink for 250 msec every 2 sec.
@@ -201,24 +201,28 @@ We assume you have a switch placed on one Ardino pin, and an LED on another for 
 
 The code we need for this looks very similar to our previous one:
 
-```python {linenos=table,hl_lines=[22,30,36,47]}
-import syio as sy
-from syio import InputWaitResult, ControlCommand, ControlCommandKind
+```python {linenos=table,hl_lines=[19,26,40]}
+import syntalos_mlink as syl
 
 
 # constants
 LED_DURATION_MSEC = 500
 
 
-fm_iport = sy.get_input_port('firmata-in')
-fm_oport = sy.get_input_port('firmatactl-out')
-tab_oport = sy.get_input_port('table-out')
+fm_iport = syl.get_input_port('firmata-in')
+fm_oport = syl.get_input_port('firmatactl-out')
+tab_oport = syl.get_input_port('table-out')
 
 
-def prepare():
+def prepare() -> bool:
     # set table header and save filename
     tab_oport.set_metadata_value('table_header', ['Time', 'Event'])
     tab_oport.set_metadata_value('data_name_proposal', 'events/led_status')
+
+    # call a function once new data was received on this input port
+    fm_iport.on_data = on_new_firmata_data
+
+    return True
 
 
 def start():
@@ -229,49 +233,41 @@ def start():
     fm_oport.firmata_register_digital_pin(8, 'led1', True)
 
 
-def loop() -> bool:
-    # wait for new input to arrive
-    if sy.await_new_input() == InputWaitResult.CANCELLED:
-        # the run has been cancelled (by the user or an error)
-        return False
+def on_new_firmata_data(data):
+    if data is None:
+        return
 
-    while True:
-        data = fm_iport.next()
-        if data is None:
-            # no more data, exit
-            break
+    # we are only interested in digital input
+    if not data.is_digital:
+        return
+    # we only want to look at the 'switch' pin
+    if data.pin_name != 'switch':
+        return
 
-        # we are only interested in digital input
-        if not data.is_digital:
-            continue
-        # we only want to look at the 'switch' pin
-        if data.pin_name != 'switch':
-            continue
+    if data.value:
+        tab_oport.submit([syl.time_since_start_msec(),
+                            'switch-on'])
+        fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
+    else:
+        tab_oport.submit([syl.time_since_start_msec(),
+                            'switch-off'])
 
-        if data.value:
-            tab_oport.submit([sy.time_since_start_msec(),
-                                'switch-on'])
-            fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
-        else:
-            tab_oport.submit([sy.time_since_start_msec(),
-                                'switch-off'])
 
-    # return True, so this function is called again
-    return True
+def stop():
+    # ensure LED is off once we stop
+    fm_oport.firmata_submit_digital_value('led1', False)
 ```
 
-In `start()` we additionally register pin `7` as an input pin this time, while all the other changes are in the `loop()`
-function. There, we initially just wait for new input to arrive. The `sy.await_new_input()` call will return if there was
-new data to process on *any* of the Python script modules' input ports. In this case we have only one input port, but of we
-had more than one we would now need to check all input ports for new data. Since there might also be more than one data block,
-we enter a `while` loop and pull new data from the input port using `fm_iport.next()` until no more data is available.
+In `start()` we now additionally register pin `7` as an input pin this time.
+We also need to read input from our Firmata device now, for which we registered `fm_iport` as input port.
+Every input port in Syntalos' Python interface has a `on_data` property which you can assign a custom function to,
+to be called when new data is received. We assign our own `on_new_firmata_data()` function in this example.
 
-Next, we check if we have data from the right, registered block by checking if the pin is digital and if it is our `switch` labelled
-pin. We ignore any other data (there should not be any, but just in case...).
+In `on_new_firmata_data()`, we first check if the received `data` is valid (it may be `None` to signal that a run
+is being stopped right now). Next, we check if we have data from the right pin by checking if it is is digital and
+if it is the pin that we previously labelled "`switch`". We ignore any other data (there should not be any, but just in case...).
 Then, if we receive a `True` value, we command the LED to blink for half a second and log that fact in our table, otherwise
 we just log the fact that the switch is off.
-
-Finally, we let the `loop()` function return `True`, so it is called again soon.
 
 Upon running this project, you should see the LED flash briefly once you push the button, and see the state of the button logged
 in the table displayed by the *Table* module.
