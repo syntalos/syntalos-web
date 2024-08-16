@@ -158,6 +158,10 @@ class SyWebBuilder:
             os.path.join(sysrc_dir, 'docs', 'pysy_mlink_api_embed.html'),
             os.path.join(self._root_dir, 'content', 'docs', 'pysy_mlink_api_embed.fragment'),
         )
+        self._copy_file(
+            os.path.join(sysrc_dir, 'docs', 'upy_sycomm_api_embed.html'),
+            os.path.join(self._root_dir, 'content', 'docs', 'upy_sycomm_api_embed.fragment'),
+        )
 
         return True
 

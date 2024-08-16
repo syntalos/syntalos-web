@@ -17,7 +17,7 @@ More advanced users can also build & install the Imaging Source SDK from its `so
 Afterwards, you can select a camera via its V4L2 or Aravis drivers and configure it in Syntalos.
 Syntalos should support the full range of configuration options for each camera (with exception of partial sensor readout on some devices).
 
-To vide the generated video, use a *Canvas* module.
+To view the generated video, use a *Canvas* module.
 
 
 Ports
