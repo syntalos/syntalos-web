@@ -1,7 +1,7 @@
 ---
 title: JSON Writer
 ---
-<img class="align-right" src="/images/modules-src/intan-rhx/intan-rhx.svg" width="80px" />
+<img class="align-right" src="/images/modules-src/jsonwriter/jsonwriter.svg" width="80px" />
 
 This module writes various data into a [Zstd](https://en.wikipedia.org/wiki/Zstd)-compressed
 [JSON](https://en.wikipedia.org/wiki/JSON) textfile.
