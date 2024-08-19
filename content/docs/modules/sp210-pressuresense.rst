@@ -16,10 +16,18 @@ Usage
 =====
 
 This module needs a Raspberry Pi Pico connected to the pressure sensor via I2C as well as the respective firmware
-flashed to the Pico chip. (TODO: Add instructions for assembly)
+flashed to the Pico chip.
 
 Once added to a Syntalos project, the module will acquire data with the selected sampling rate and zeroing
 settings. Data can be recorded e.g. using a *JSON Writer* module, or displayed via a *Plot Time Series* module.
+
+
+Hardware Assembly
+=================
+
+Coming soon!
+`(TODO: Add instructions for assembly)`
+
 
 Ports
 =====
