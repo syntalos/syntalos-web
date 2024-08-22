@@ -15,7 +15,7 @@ The Flatpak'ed version will run on any Linux distribution, but due to Flatpak's 
 constraints may need some additional external software installed for certain hardware
 to work properly. If these components are needed, Syntalos will notify the user.
 
-You can [view & download Syntalos on Flathub.org](https://flathub.org/apps/io.github.bothlab.syntalos),
+You can [view & download Syntalos on Flathub.org](https://flathub.org/apps/org.syntalos.syntalos),
 or install it directly from you software store application (GNOME Software or KDE Discover), if Flatpak is
 set up with Flathub, which it is on most distributions (with the notable exception being Ubuntu).
 
@@ -29,7 +29,7 @@ sudo apt install flatpak
 # set up Flathub
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 # install Syntalos
-flatpak install flathub io.github.bothlab.syntalos
+flatpak install flathub org.syntalos.syntalos
 ```
 
 

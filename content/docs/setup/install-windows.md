@@ -58,7 +58,7 @@ Afterwards, you can actually install Syntalos by running these two commands:
 
 ```bash
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-sudo flatpak install io.github.bothlab.syntalos
+sudo flatpak install org.syntalos.syntalos
 ```
 
 While running the last command, you will need to confirm the installation twice by pressing *Enter*.
@@ -69,7 +69,7 @@ WSL2 environment):
 
 ```bash
 sudo mkdir -p /usr/local/share/applications/
-sudo ln -s /var/lib/flatpak/exports/share/applications/io.github.bothlab.syntalos.desktop /usr/local/share/applications/
+sudo ln -s /var/lib/flatpak/exports/share/applications/org.syntalos.syntalos.desktop /usr/local/share/applications/
 ```
 
 ## Run Syntalos
@@ -78,7 +78,7 @@ You can run Syntalos from the Windows start menu if you opted for the workaround
 Alternatively, you can launch it from the WSL command-line (*Ubuntu* by default) by running:
 
 ```bash
-flatpak run io.github.bothlab.syntalos
+flatpak run org.syntalos.syntalos
 ```
 
 You should then see the Syntalos GUI to play around with:

@@ -19,7 +19,7 @@ Alternatively, you can also have Python modules loaded from your home directory.
 in the following locations:
 
 * `~/.local/share/DraguhnLab/Syntalos/modules` for normal installations
-* `~/.var/app/io.github.bothlab.syntalos/data/modules` if installed as Flatpak bundle
+* `~/.var/app/org.syntalos.syntalos/data/modules` if installed as Flatpak bundle
 
 Any modules copied there will be automatically loaded.
 

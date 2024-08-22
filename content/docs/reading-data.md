@@ -57,7 +57,7 @@ syntalos-metaview --tsync /path/to/your/tsync-file.tsync
 *If you installed Syntalos from the software store:*
 
 ```bash
-flatpak run --command=syntalos-metaview io.github.bothlab.syntalos --tsync /path/to/your/tsync-file.tsync
+flatpak run --command=syntalos-metaview org.syntalos.syntalos --tsync /path/to/your/tsync-file.tsync
 ```
 
 The tool will then print a CSV-like representation of the data, preceded by the metadata the tsync file contains.
