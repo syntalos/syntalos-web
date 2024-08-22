@@ -188,9 +188,15 @@ class SyWebBuilder:
         subprocess.check_call(cmd, cwd=self._root_dir)
         result_dir = os.path.join(self._root_dir, 'public')
 
+        # copy Flathub verification data
+        os.makedirs(os.path.join(result_dir, '.well-known'), exist_ok=True)
+        self._copy_file(
+            'org.flathub.VerifiedApps.txt',
+            os.path.join(result_dir, '.well-known', 'org.flathub.VerifiedApps.txt'),
+        )
+
         # delete files we don't want
         rm_files = []
-
         for fname in rm_files:
             if not os.path.isfile(fname):
                 continue

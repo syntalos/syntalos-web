@@ -1,0 +1,4 @@
+# Flathub Verification
+
+# org.syntalos.syntalos
+df5a8963-2e5b-4baf-ae2c-04718189b1db
