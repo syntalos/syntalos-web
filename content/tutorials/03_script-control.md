@@ -1,5 +1,6 @@
 ---
 title: 03. Customization with Python scripts
+type: docs
 next: 04_firmata-interface
 ---
 

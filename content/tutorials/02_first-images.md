@@ -1,5 +1,6 @@
 ---
 title: 02. Seeing the world, connecting modules
+type: docs
 next: 03_script-control
 ---
 

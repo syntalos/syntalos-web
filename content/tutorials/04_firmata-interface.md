@@ -1,5 +1,6 @@
 ---
 title: 04. Controlling simple devices
+type: docs
 next: D1_new-cpp-module
 ---
 
@@ -194,7 +195,7 @@ This will give you predictable and reliable latencies.
 
 If you hit the *Run* button, the experiment should run and the LED should blink for 250 msec every 2 sec.
 
-## 4. Automation: Reading Data
+## 5. Automation: Reading Data
 
 Now, let's read some data and let an LED blink for each piece of data that was received!
 We assume you have a switch placed on one Ardino pin, and an LED on another for testing purposes.
@@ -272,7 +273,7 @@ we just log the fact that the switch is off.
 Upon running this project, you should see the LED flash briefly once you push the button, and see the state of the button logged
 in the table displayed by the *Table* module.
 
-## 5. Expansion
+## 6. Expansion
 
 With this, you have basic control over a lot of equipment to control behavior experiments, from TTL-controlled lasers,
 to gates and lick sensors.

@@ -1,5 +1,6 @@
 ---
 title: D2. Creating a new Python Module
+type: docs
 ---
 
 These instructions exit to create a new Python module from scratch.

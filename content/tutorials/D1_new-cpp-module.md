@@ -1,5 +1,6 @@
 ---
 title: D1. Creating a new C++ Module
+type: docs
 next: D2_new-python-module
 ---
 

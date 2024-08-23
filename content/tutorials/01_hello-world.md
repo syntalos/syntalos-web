@@ -1,5 +1,6 @@
 ---
 title: 01. Hello World! (Can you hear me?)
+type: docs
 next: 02_first-images
 ---
 

@@ -1,5 +1,8 @@
 ---
 title: Tutorials
+type: docs
+sidebar:
+  open: true
 next: 01_hello-world
 ---
 
