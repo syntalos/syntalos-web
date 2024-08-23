@@ -15,8 +15,8 @@ These pages document the software, for users who just want to use Syntalos, as w
 to make more advanced changes.
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<a class="github-button" href="https://github.com/bothlab/syntalos" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star bothlab/syntalos on GitHub">Star</a>
-<a class="github-button" href="https://github.com/bothlab/syntalos/releases" data-icon="octicon-download" data-size="large" aria-label="Download bothlab/syntalos on GitHub">Download</a>
+<a class="github-button" href="https://github.com/syntalos/syntalos" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star syntalos/syntalos on GitHub">Star</a>
+<a class="github-button" href="https://github.com/syntalos/syntalos/releases" data-icon="octicon-download" data-size="large" aria-label="Download syntalos/syntalos on GitHub">Download</a>
 
 
 ## Explore
