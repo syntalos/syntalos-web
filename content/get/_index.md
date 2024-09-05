@@ -13,13 +13,20 @@ toc: false
 
 ## Quick Install Guides
 
-{{% detailsicon title="Installation on Ubuntu" closed="true" %}}
+<!--
+##############
+UBUNTU & KUBUNTU
+##############
+-->
+{{% detailsicon title="Installation on Ubuntu & Kubuntu" icon="images/distros/ubuntu.svg" closed="true" %}}
 
 {{% steps %}}
 
 ### Verify the Ubuntu version
 
 You need Ubuntu 24.04 or later in order to run Syntalos.
+You can see your Ubuntu/Kubuntu version in the system settings,
+usually under "Details".
 
 ### Add the PPA
 
@@ -39,7 +46,50 @@ sudo apt install syntalos
 
 {{% /detailsicon %}}
 
-{{% detailsicon title="Other Linux / Software Store" closed="true" %}}
+
+<!--
+##############
+DEBIAN
+##############
+-->
+{{% detailsicon title="Installation on Debian" icon="images/distros/debian.svg" closed="true" %}}
+
+{{% steps %}}
+
+### Verify the Debian version
+
+We are currently building packages for Debian 13 (Trixie).
+You can see your Debian version in the system settings dialog,
+or run `cat /etc/os-release` in a terminal to see it.
+
+### Download the packages
+
+Go to the [Syntalos Releases](https://github.com/syntalos/syntalos/releases) page and download
+the .deb packages for your Debian version.
+
+### Install Syntalos
+
+You can install the packages using your graphical package manager (just make sure the
+`syntalos-hwsupport*.deb` package is installed first).
+
+Alternatively, you can extract the ZIP rchive to a directory and install the packages
+from the command-line:
+```bash
+cd path/with/syntalos/debfiles
+sudo apt install ./syntalos*.deb
+```
+
+{{% /steps %}}
+
+{{% /detailsicon %}}
+
+
+<!--
+##############
+FLATPAK & OTHER
+##############
+-->
+{{% detailsicon title="Other Linux / Software Store" icon="images/distros/linux.svg" closed="true" %}}
 
 {{% steps %}}
 
@@ -61,5 +111,3 @@ flatpak install flathub org.syntalos.syntalos
 {{% /steps %}}
 
 {{% /detailsicon %}}
-
-
