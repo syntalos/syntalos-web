@@ -65,12 +65,28 @@ can then upload to your Pico to make it generate precise(ish) pulses as external
 The switch on the device can be used to select one of two modes, depending on which position it is in when the device is powered on.
 It can either operate in fixed-interval pulses, or vary the pulse interval.
 
+
 ## Syntalos Measurement
 
 There are two types of time synchronization measurement tests that you can perform:
 Long-running measurements to check whether the device times remain aligned for very long measurements ("*Marathon Sync Test*"),
 and short measurements of many experiments where they are continuously started and stopped to determine if the initial time offset
 between devices is small and constant ("*LaunchSync Offset Test*").
+
+### Simple Firmata Device Latency Test
+
+To test the roundtrip latency of an Arduino or other device that communicates via the Firmata protocol via a serial port,
+you can use the [ArduinoPythonLatencyTest.syct](https://github.com/syntalos/syntalos/raw/refs/heads/master/tests/demos/device-dependent/ArduinoPythonLatencyTest.syct)
+example Syntalos configuration as a starting point.
+
+It will, by default, write a table with the receival time (`RecTime`) when Syntalos has received data from your device, and the processing time (`ProcTime`) when the
+Python script has seen the data.
+
+You will have to wire up the Arduino (or other device) to the pulse generator and adjust the script accordingly if you used different digital input pins.
+
+In order to determine the true roundtrip latency, you will also have to add a reliable device with a high sampling frequency to the Syntalos configuration,
+for example the *Intan RHX* module, and feed the Arduino output and pulse generator TTL output into the respective digital input channels of the Intan board.
+Alternatively, you can also measure this latency externally with a different device or oscilloscope.
 
 ### Marathon Sync Test
 
