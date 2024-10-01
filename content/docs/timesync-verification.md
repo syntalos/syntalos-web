@@ -110,5 +110,32 @@ Depending on how your images were acquired, you may also want to adjust the brig
 
 ### LaunchSync Offset Test
 
-`TODO`
-Coming soon!
+To determine any offset that appears between the different devices when the experiment is re-launched many times, Syntalos' "Interval Run"
+feature can be used to simplify the process. To use it, click on *Tool → Interval Run* in the Syntalos UI.
+
+This dialog should open:
+![Syntalos: Interval Run Configuration Dialog](/images/syntalos-intervalrun.avif)
+
+In it, you can select how many times you want the experiment run to be repeated, and how much time should pass between multiple experiment
+runs.
+
+{{< callout type="info" >}}
+Make **sure** that you have set a placeholder in yor experiment name, either `{n}` for the experiment number, or
+`{time}` for the experiment time.
+A valid experiment name for an interval-run experiment may for example be `Launch-{n}`
+
+If you do not set a placeholder, Syntalos will try to override existing data and prompt you about that every time.
+{{< /callout >}}
+
+You can start an *Interval Run* experiment just like a normal experiment (using the *Start* button), and also stop it the same way.
+If an interval run is active, Syntalos will display that fact in the information panel of the current experiment.
+
+Once data has been acquired, you can use the [syntalos-timecheck.py](https://github.com/syntalos/timing-validation/) script (from the same
+repository that is used to analyze "Marathon" experiments as well) to as a starting point of a script to analyze the data.
+You will have to adjust `DATA_ROOT_DIR` to where your data is located, set `CURRENT_EXPERIMENT_CLASS` to `'launchsync'` and ensure all launch experiments
+are added to the respective list in `sy_timetest/syntalos_tsexp_defs.py`.
+
+You can then generate plots as shown in the *Klumpp et al.* publication mentioned in the section above, but for the time divergences upon launching
+the same experiments many times.
+Keep in mind that, just like for the *Marathon* experiments, you will have to adjust the script to fit your individual selection of devices.
+The provides scripts are just examplary, as this analysis can to easily be fully automated due to the wide variety of involved hardware.
