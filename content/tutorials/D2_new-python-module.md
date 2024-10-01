@@ -45,7 +45,8 @@ icon = "penrose-py.svg"
 main = "mod-main.py"
 use_venv = false
 
-devel = true
+categories = 'sydevel;example'
+features = ['show-settings']
 
 [ports]
 
@@ -90,7 +91,7 @@ functions like a Python Script module, that Syntalos will call at the appropriat
 Ports are also accessed the same way, and data is also submitted the same way. Refer to the [syntalos_mlink API documentation]({{< ref "/docs/pysy-mlink-api" >}})
 for a full reference of all available methods.
 
-In addition to the known methods, a Python module also has a `set_settings(settings: bytes)` and `change_settings(old_settings: bytes) -> bytes`
+In addition to the known methods, a Python module also has a `set_settings(settings: bytes)` and `change_settings(old_settings: bytes)`
 entry point. The former is called before a run is started with the module's settings serialized as bytes, in order for them to be applied before
 the run is launched.
 The latter is invoked by the user wanting to change module settings. Syntalos will provide the old settings, and it is up to the module to
