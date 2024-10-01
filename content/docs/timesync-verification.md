@@ -90,8 +90,23 @@ Alternatively, you can also measure this latency externally with a different dev
 
 ### Marathon Sync Test
 
-`TODO`
-Coming soon!
+To validate the long-time synchronization performance of Syntalos as done in
+*Klumpp et al. Syntalos: A software for precise simultaneous multi-modal data acquisition and closed-loop interventions, 11 January 2024,
+PREPRINT (Version 1) available at Research Square [doi.org/10.21203/rs.3.rs-3793251/v1](https://doi.org/10.21203/rs.3.rs-3793251/v1)*
+you first have to acquire a long (multiple hours) recording with the desired devices being triggered by the *Pi Pico Pulse Generator* as
+outlined above.
+
+The Syntalos configuration you need depends on the hardware you are testing, but we included the project we used for validation as an
+example at [syntalos-example-projects](https://github.com/syntalos/timing-validation/tree/main/syntalos-example-projects).
+It includes three cameras, a miniscope, an Intan electrophysiology amplifier, and a latency test in either Python (`TimeSyncTest_v5.syct`),
+native C++ module (`TimeSyncTest_v5-CppNative.syct`) or C++-scripted module using Syntalos' MLink interface (`TimeSyncTest_v3-CppMLink.syct`).
+
+Once you have acquired data, you can use the [syntalos-timecheck.py](https://github.com/syntalos/timing-validation/) script from the same
+repository to generate plots of the time divergence over the recording time. To do that for *Marathon* long-running experiments,
+you will have to adjust `DATA_ROOT_DIR` to where your data is located, set `CURRENT_EXPERIMENT_CLASS` to `'marathon'` and ensure your experiment
+is added with its date to the respective list in `sy_timetest/syntalos_tsexp_defs.py`.
+
+Depending on how your images were acquired, you may also want to adjust the brightness thresholds to detect the light flashes reliably.
 
 ### LaunchSync Offset Test
 
