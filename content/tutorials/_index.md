@@ -20,6 +20,7 @@ introduce some of Syntalos' functionality.
 ### Video Tutorials
 
 * [V1. Tour of the Syntalos User Interface]({{< ref "V1_gui-intro" >}})
+* [V2. Brief introduction to Python scripting]({{< ref "V2_python-intro" >}})
 
 
 ## Developer Tutorials

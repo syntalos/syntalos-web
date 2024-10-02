@@ -8,6 +8,8 @@ Syntalos allows users to write custom [Python](https://docs.python.org/3/tutoria
 scripts to control module behavior, to realize a wite array of different experiments and to
 tailor module behavior to the user's need.
 This tutorial is a basic introduction for using the *Python Script* module in Syntalos.
+It is also available as a video at
+"[V2. Brief introduction to Python scripting]({{< ref "V2_python-intro" >}})".
 
 ## 1. Preparations
 
