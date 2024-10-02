@@ -14,7 +14,7 @@ for modules of your new type and must not be changed in future (or otherwise exi
 
 If you are compiling Syntalos manually, you can add your new Python module directly to the source tree in
 the `modules/` directory, and then add a new `subdir` directive for it to the toplevel
-[modules/meson.build](https://github.com/bothlab/syntalos/blob/master/modules/meson.build) file.
+[modules/meson.build](https://github.com/syntalos/syntalos/blob/master/modules/meson.build) file.
 
 Alternatively, you can also have Python modules loaded from your home directory. Syntalos will look
 in the following locations:
@@ -27,7 +27,7 @@ Any modules copied there will be automatically loaded.
 ## 2. Copy a Template
 
 The easiest way to start building a new module is to copy a template to have any boilerplate present.
-A minimal Python module exists in the form of [example-py](https://github.com/bothlab/syntalos/tree/master/modules/example-py).
+A minimal Python module exists in the form of [example-py](https://github.com/syntalos/syntalos/tree/master/modules/example-py).
 Copy its directory to the location where you develop your module, and rename it to your chosen ID name.
 
 ## 3. Adjust Metadata

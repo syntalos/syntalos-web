@@ -67,12 +67,12 @@ sudo ninja install
 ```
 
 Once you can build Syntalos, you can set up your new C++ module. Do not hesitate to ask questions in case you run into any issues
-and file an issue or ask in [Discussions on GitHub](https://github.com/bothlab/syntalos/discussions).
+and file an issue or ask in [Discussions on GitHub](https://github.com/syntalos/syntalos/discussions).
 
 ## 2. Copy a Template
 
 The easiest way to start building a new module is to copy a template.
-A minimal C++ module exists in the form of [example-cpp](https://github.com/bothlab/syntalos/tree/master/modules/example-cpp).
+A minimal C++ module exists in the form of [example-cpp](https://github.com/syntalos/syntalos/tree/master/modules/example-cpp).
 Copy its directory and rename it to your chosen ID name.
 A module ID name must be unique and can not be changed once it is chosen, because otherwise existing configurations would break.
 It uniquely identifies your module, and may only contain alphanumeric characters, dashes and underscores.
@@ -81,7 +81,7 @@ It uniquely identifies your module, and may only contain alphanumeric characters
 
 Rename the C++ files if you want to and adjust any naming in `meson.build`. Also, ensure your new module directory
 is included in a `subdir()` directive in the toplevel
-[modules/meson.build](https://github.com/bothlab/syntalos/blob/master/modules/meson.build) file.
+[modules/meson.build](https://github.com/syntalos/syntalos/blob/master/modules/meson.build) file.
 
 Then, open the `examplemodule.cpp` file (or what it was renamed to) and scroll to the bottom.
 You will find these lines, implementing virtual methods of a `ModuleInfo` class:
@@ -139,7 +139,7 @@ methods you can implement to add features to your module.
 Most usable API for modules can be found in [the moduleapi.h header]({{< ref "/api/files/moduleapi_8h" >}}), and is documented there.
 
 The example C++ module also has some inline comments, explaining the purpose of certain functions.
-If you get stuck while developing a module, do not hesitate to [ask for help](https://github.com/bothlab/syntalos/discussions).
+If you get stuck while developing a module, do not hesitate to [ask for help](https://github.com/syntalos/syntalos/discussions).
 
 `TODO: Add more explanations.`
 

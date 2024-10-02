@@ -5,7 +5,7 @@ prev: docs/setup/
 ---
 
 You can find the source code and precompiled binaries for some distribution
-for the latest Syntalos releases at the [Syntalos GitHub releases page](https://github.com/bothlab/syntalos/releases>).
+for the latest Syntalos releases at the [Syntalos GitHub releases page](https://github.com/syntalos/syntalos/releases).
 
 
 ## Installing via Flathub / from the App-Center

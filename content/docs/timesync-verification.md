@@ -52,7 +52,7 @@ To build it yourself, clone the Syntalos source code and use `cmake` for buildin
 from `contrib/testpulse-generator`:
 
 ```bash
-git clone --depth 1 https://github.com/bothlab/syntalos.git
+git clone --depth 1 https://github.com/syntalos/syntalos.git
 cd syntalos/contrib/testpulse-generator
 mkdir build && cd build
 cmake -DPICO_SDK_FETCH_FROM_GIT=ON ..
