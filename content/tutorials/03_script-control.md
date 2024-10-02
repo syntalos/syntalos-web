@@ -90,7 +90,7 @@ def send_beep():
     oport.submit(ctl)
 
     if not syl.is_running():
-        return False
+        return
 
     # run again in 5 sec
     syl.schedule_delayed_call(5 * 1000, send_beep)
