@@ -17,10 +17,11 @@ introduce some of Syntalos' functionality.
 * [03. Customization with Python]({{< ref "03_script-control" >}})
 * [04. Controlling simple devices]({{< ref "04_firmata-interface" >}})
 
-### Video Tutorials
+### Videos
 
 * [V1. Tour of the Syntalos User Interface]({{< ref "V1_gui-intro" >}})
 * [V2. Brief introduction to Python scripting]({{< ref "V2_python-intro" >}})
+* [V3. Experiment Demos]({{< ref "V3_experiment-demos" >}})
 
 
 ## Developer Tutorials
