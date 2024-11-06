@@ -42,6 +42,12 @@ sudo apt update
 sudo apt install syntalos
 ```
 
+### Allow the current user access to serial devices
+
+```bash
+sudo usermod -a -G dialout $USER
+```
+
 {{% /steps %}}
 
 {{% /detailsicon %}}
@@ -79,6 +85,12 @@ cd path/with/syntalos/debfiles
 sudo apt install ./syntalos*.deb
 ```
 
+### Allow the current user access to serial devices
+
+```bash
+sudo usermod -a -G dialout $USER
+```
+
 {{% /steps %}}
 
 {{% /detailsicon %}}
@@ -106,6 +118,12 @@ installer application (GNOME Software, KDE Discover, etc.), or from
 the command-line using this command:
 ```bash
 flatpak install flathub org.syntalos.syntalos
+```
+
+### Allow the current user access to serial devices
+
+```bash
+sudo usermod -a -G dialout $USER
 ```
 
 {{% /steps %}}
