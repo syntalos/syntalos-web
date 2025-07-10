@@ -123,6 +123,16 @@ class SyWebBuilder:
             f.write('---\ntitle: Version History\n---\n\n')
             f.write(news_data)
 
+    def _adjust_copy_python_doc(self, src_fname, dst_fname):
+        """Copy Python docs, making some CSS adjustments so dark mode works."""
+
+        with open(src_fname, 'r') as f:
+            content = f.read()
+        content = content.replace('.pdoc{--text:#212529;--muted:#6c757d;', '.pdoc{--muted:#6c757d;')
+        content = content.replace('background-color:var(--accent);', '')
+        with open(dst_fname, 'w') as f:
+            f.write(content)
+
     def _prepare(self) -> bool:
         """Prepare website."""
 
@@ -154,11 +164,11 @@ class SyWebBuilder:
         )
 
         # copy prebuilt HTML Python docs
-        self._copy_file(
+        self._adjust_copy_python_doc(
             os.path.join(sysrc_dir, 'docs', 'pysy_mlink_api_embed.html'),
             os.path.join(self._root_dir, 'content', 'docs', 'pysy_mlink_api_embed.fragment'),
         )
-        self._copy_file(
+        self._adjust_copy_python_doc(
             os.path.join(sysrc_dir, 'docs', 'upy_sycomm_api_embed.html'),
             os.path.join(self._root_dir, 'content', 'docs', 'upy_sycomm_api_embed.fragment'),
         )
