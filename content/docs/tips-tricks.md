@@ -28,3 +28,13 @@ expensive than regular USB expansion cards, but are worth the money for scientif
 
 We had very good experience with the [StarTech.com 4-Port USB PCIe Card with 4X Independent USB Controllers](https://www.amazon.com/dp/B0DCKC11JM)
 card (link points to its Amazon page).
+
+
+### Which codec should I choose when recording video?
+
+The short answer is *FFV1* if you need pixel-perfect lossless encoding, and *VP9* for lossy encoding
+with decently small files. *AV1* for modern systems where small files matter. Always perform some test
+recordings first to select the optimal codec and settings for your particular data and experiment!
+
+For a more detailed explanation, check out the FAQ of the
+[Video Recorder module]({{< ref "/docs/modules/videorecorder" >}}) directly.
