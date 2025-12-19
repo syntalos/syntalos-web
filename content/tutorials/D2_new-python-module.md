@@ -19,7 +19,7 @@ the `modules/` directory, and then add a new `subdir` directive for it to the to
 Alternatively, you can also have Python modules loaded from your home directory. Syntalos will look
 in the following locations:
 
-* `~/.local/share/DraguhnLab/Syntalos/modules` for normal installations
+* `~/.local/share/Syntalos/modules` for normal installations
 * `~/.var/app/org.syntalos.syntalos/data/modules` if installed as Flatpak bundle
 
 Any modules copied there will be automatically loaded.
