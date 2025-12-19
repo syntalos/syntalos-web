@@ -91,7 +91,7 @@ def run():
 
 
 def stop():
-    """This function is called once a run is stopped, by the user, and error or when
-    the loop() function returned False."""
+    """This function is called once a run is stopped
+    (by the user, or if an error occurred)."""
     pass
 ```
