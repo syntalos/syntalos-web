@@ -83,6 +83,8 @@ Each port must have a `data_type` with the unique name of the data that it trans
 The `id` of a port is a unique ID that can be used to reference the port in Python code, while `title` is the actual human-readable
 name that is displayed in the Syntalos GUI.
 
+Please note that you might need to set additional port metadata depending on to which modules you plan to connect to. Some Modules expect specific port metadata, e.g., the built in [Plot Time Series]({{< ref "/docs/modules/plot-timeseries" >}}) module (consult its documentation for details).
+
 ## 4. Write your code
 
 After setting all metadata, it is time to actually write your module's code!
