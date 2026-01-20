@@ -120,7 +120,7 @@ A block contains the time value of the first clock, written in the previously de
 followed by the value of the second clock. Both values are hashed, and the checksum is kept and updated using the following values.
 
 If values of the previously defined `block_size` amount have been written, the block is finalized by writing a
-`TSYNC_FILE_BLOCK_TERM` terminator as `uint64` at the given position, followed by the XXH3 checksum as `ùint64`.
+`TSYNC_FILE_BLOCK_TERM` terminator as `uint64` at the given position, followed by the XXH3 checksum as `uint64`.
 After writing the block, the rolling checksum is reset, and the next block is written.
 (This allows to pinpoint and ignore a damaged block, if the file gets corrupted, without loosing all data).
 
