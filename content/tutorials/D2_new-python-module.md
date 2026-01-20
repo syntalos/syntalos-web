@@ -79,7 +79,7 @@ from a `requirements.txt` file in the module's folder.
 
 Lastly, you need to define the module's input/output ports in the `ports` list. The `ports.in` key denotes an input port, while
 `ports.out` denotes an output port.
-Each port must have a `data_type` with the unique name of the data that it transfers. refer to the Python Script module for a full list.
+Each port must have a `data_type` with the unique name of the data that it transfers. Refer to the Python Script module for a full list.
 The `id` of a port is a unique ID that can be used to reference the port in Python code, while `title` is the actual human-readable
 name that is displayed in the Syntalos GUI.
 

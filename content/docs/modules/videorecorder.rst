@@ -52,7 +52,7 @@ Should I use video file slicing?
 You generally don't need to slice the video recording into multiple parts, especially not if you
 use the `MKV` container format.
 
-You may will want to enable this feature if your offline data analysis pipeline does not have optimal
+You may want to enable this feature if your offline data analysis pipeline does not have optimal
 memory management and wants to load the entire video into memory. This can become an issue if the individual
 video is large.
 

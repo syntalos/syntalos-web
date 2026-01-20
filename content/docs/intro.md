@@ -31,7 +31,7 @@ from experience with developing software that had similar requirements to Syntal
  * Timestamps of all data sources of an experiment should be synchronized (within tolerance limits), so data at
    specific points in time can be compared directly. If hardware synchronization is unavailable, a software solution
    should be used to achieve reasonable synchronization.
- * A data acquistion task must never block a different acquistion or processing task.
+ * A data acquisition task must never block a different acquisition or processing task.
  * Data is stored in a fixed directory structure (Experiment Directory Layout, EDL) with all metadata alongside the data.
  * The software must account for experimenter error and have sane failure modes (autocorrect bad experimenter input, never
    have a component fail silently, warn about anticipated future issues (like low disk space), etc.).
@@ -56,11 +56,11 @@ how it is designed.
 
 Syntalos runs most of its modules in separate kernel threads, subjecting them to the scheduler of the operating system.
 This ensures that modules within threads that do interface with hardware are never blocked by other tasks within the
-bigger Syntalos process and can react to incoming hardware events quickly, especially if their theads are running at
+bigger Syntalos process and can react to incoming hardware events quickly, especially if their threads are running at
 elevated priority.
 
 For modules that do not have such strict requirements, Syntalos is also able to employ event-based patterns to execute
-module code, where multipe modules share one kernel thread.
+module code, where multiple modules share one kernel thread.
 
 Communication between modules happens via lock-free queues, ensuring data is passed between threads and within threads
 both efficiently and safely.
@@ -79,7 +79,7 @@ If the latency and efficiency gains of a threaded module are not required, runni
 ![Syntalos Module Lifecycle](/images/sydsgn/symodule-lifecycle.png "State transitions of a Syntalos module")
 
 Syntalos modules, when they are added to a board, run through an initialization phase first that is only executed once per module.
-During which, they can set up essential data structures and configure themselves (Python modules may make sure their virtualenv exsists
+During which, they can set up essential data structures and configure themselves (Python modules may make sure their virtualenv exists
 at that stage).
 
 Once an experiment run is started, all modules execute a *Prepare* stage in sequence. During this stage they configure metadata, set up
@@ -116,7 +116,7 @@ code duplication and speed up the build process of the Syntalos codebase.
 
 #### Executables
 
-**syntalos-roudi**: This excutable provides an implementation of RouDi (Routing and Discovery) for the [Iceoryx](https://iceoryx.io/latest/) system
+**syntalos-roudi**: This executable provides an implementation of RouDi (Routing and Discovery) for the [Iceoryx](https://iceoryx.io/latest/) system
 used by Syntalos for fast IPC. It holds the shared memory pools for inter-process data exchange and monitors all Syntalos modules that are using the
 *mlink* interface to run in separate processes (as well as the Syntalos master process itself).
 

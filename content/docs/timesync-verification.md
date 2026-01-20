@@ -136,6 +136,6 @@ You will have to adjust `DATA_ROOT_DIR` to where your data is located, set `CURR
 are added to the respective list in `sy_timetest/syntalos_tsexp_defs.py`.
 
 You can then generate plots as shown in the *Klumpp et al.* publication mentioned in the section above, but for the time divergences upon launching
-the same experiments many times.
+the same experiment many times.
 Keep in mind that, just like for the *Marathon* experiments, you will have to adjust the script to fit your individual selection of devices.
-The provides scripts are just examplary, as this analysis can to easily be fully automated due to the wide variety of involved hardware.
+The provided scripts are just illustrative, as this analysis cannot be easily fully automated due to the wide variety of involved hardware.
