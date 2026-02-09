@@ -148,7 +148,7 @@ def trigger_led_pulse():
         return False
 
     # run this function again after some delay
-    syl.schedule_delayed_call(LED_INTERVAL_MSEC, send_beep)
+    syl.schedule_delayed_call(LED_INTERVAL_MSEC, trigger_led_pulse)
 
 def stop():
     # ensure LED is off once we stop
@@ -181,7 +181,7 @@ show up in the table later. Then, we actually send a message to the *Firmata IO*
 for the time `LED_DURATION_MSEC`.
 
 To introduce some delay before sending another such command, we instruct the `trigger_led_pulse()` function to be called again
-after `LED_INTERVAL_MSEC` via `syl.schedule_delayed_call(LED_INTERVAL_MSEC, send_beep)`.
+after `LED_INTERVAL_MSEC` via `syl.schedule_delayed_call(LED_INTERVAL_MSEC, trigger_led_pulse)`.
 This is repeated until the experiment has been stopped by the user.
 
 {{< callout type="warning" >}}
