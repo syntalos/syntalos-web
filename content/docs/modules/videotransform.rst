@@ -33,7 +33,7 @@ Ports
    * - 🠺Frames
      - In
      - ``Frame``
-     - Input frames to transform.
+     - Input frames to transform. Required metadata: ``size: pair<int, int>`` (e.g., for cropping).
    * - Edited Frames🠺
      - Out
      - ``Frame``

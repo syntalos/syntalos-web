@@ -104,7 +104,7 @@ Ports
    * - 🠺Frames
      - In
      - ``Frame``
-     - The frames to record.
+     - The frames to record. Required metadata: ``framerate: int``.
 
 
 Stream Metadata
