@@ -8,6 +8,25 @@ You can find the source code and precompiled binaries for some distribution
 for the latest Syntalos releases at the [Syntalos GitHub releases page](https://github.com/syntalos/syntalos/releases).
 
 
+## Installing from the APT repository
+
+This is the recommended way to install Syntalos if you are on Debian or Ubuntu.
+Ensure you are at least on Debian 13 or Ubuntu 24.04, then run this setup command in a terminal
+to set up the software source for Syntalos:
+```bash
+curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
+```
+
+The script will add an APT repository source to your system. You can
+[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+of the script to see exactly what it does.
+
+You can then install Syntalos with APT:
+```bash
+sudo apt install syntalos
+```
+
+
 ## Installing via Flathub / from the App-Center
 
 Syntalos is available as Flatpak bundle for download via Flathub.
@@ -37,14 +56,14 @@ flatpak install flathub org.syntalos.syntalos
 
 ### Debian
 
-Ensure to have Debian 12 (Bookworm) or later, then install the package via your graphical package manager or via
+Ensure to have Debian 13 (Trixie) or later, then install the package via your graphical package manager or via
 the command-line: `sudo apt install ./syntalos_*.deb`. You can then launch Syntalos from the application menu
 or command-line. A `-dbgsym` package is provided to easily produce debug backtraces in case of crashes, but this
 package is optional and does not need to be installed.
 
 ### Ubuntu
 
-Ensure you are on Ubuntu 22.04 (Jammy Jellyfish) or later.
+Ensure you are on Ubuntu 24.04 (Noble Numbat) or later.
 
 After the PPA is registered, you should be able to install the package via your graphical package manager or
 the command-line: `sudo apt install ./syntalos_*.deb`.
@@ -73,7 +92,7 @@ the provided binary package.
 
 ## Building from source
 
-We recommend Debian 12 (Bookworm) or Ubuntu 22.04 (Jammy Jellyfish) to run Syntalos, but any Linux distribution that has a
+We recommend Debian 13 (Trixie) or Ubuntu 24.04 (Noble Numbat) to run Syntalos, but any Linux distribution that has a
 recent enough C++ compiler and Qt version should work.
 
 Some modules may add additional dependencies for libraries to talk to individual devices or for a certain special feature.
@@ -97,7 +116,7 @@ After installing all dependencies, you should be able to build the software afte
 
 ```bash
 mkdir build && cd build
-meson --buildtype=debugoptimized -Doptimize-native=true ..
+meson setup --buildtype=debugoptimized -Doptimize-native=true ..
 ninja
 sudo ninja install
 ```

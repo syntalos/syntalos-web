@@ -24,17 +24,21 @@ UBUNTU & KUBUNTU
 
 ### Verify the Ubuntu version
 
-You need Ubuntu 24.04 or later in order to run Syntalos.
+You need Ubuntu 24.04 or later in order to run Syntalos. To run the latest version
+of Syntalos, we recommend Ubuntu 26.04.
 You can see your Ubuntu/Kubuntu version in the system settings,
 usually under "Details".
 
-### Add the PPA
+### Add the repository
 
-Run these commands to add a software source for the pre-compiled version of Syntalos:
+Run this setup command in a terminal to set up the software source for Syntalos on Ubuntu:
 ```bash
-sudo add-apt-repository ppa:ximion/syntalos
-sudo apt update
+curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
 ```
+
+The script will add an APT repository source to your system. You can
+[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+of the script to see exactly what it does.
 
 ### Install Syntalos
 
@@ -68,21 +72,21 @@ We are currently building packages for Debian 13 (Trixie).
 You can see your Debian version in the system settings dialog,
 or run `cat /etc/os-release` in a terminal to see it.
 
-### Download the packages
+### Add the repository
 
-Go to the [Syntalos Releases](https://github.com/syntalos/syntalos/releases) page and download
-the .deb packages for your Debian version.
+Run this setup command in a terminal to set up the software source for Syntalos on Debian:
+```bash
+curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
+```
+
+The script will add an APT repository source to your system. You can
+[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+of the script to see exactly what it does.
 
 ### Install Syntalos
 
-You can install the packages using your graphical package manager (just make sure the
-`syntalos-hwsupport*.deb` package is installed first).
-
-Alternatively, you can extract the ZIP rchive to a directory and install the packages
-from the command-line:
 ```bash
-cd path/with/syntalos/debfiles
-sudo apt install ./syntalos*.deb
+sudo apt install syntalos
 ```
 
 ### Allow the current user access to serial devices
