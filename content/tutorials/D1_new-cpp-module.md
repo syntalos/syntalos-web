@@ -21,7 +21,6 @@ Quick build instructions for Debian/Ubuntu:
 ```bash
 sudo apt install \
     git ca-certificates \
-    python3-pip \
     cmake \
     gettext \
     libaravis-dev \
@@ -33,16 +32,15 @@ sudo apt install \
     libglib2.0-dev \
     libgstreamer1.0-dev \
     libgstreamer-plugins-base1.0-dev \
-    libkf5archive-dev \
-    libkf5texteditor-dev \
-    libqtermwidget5-1-dev \
-    libvips-dev \
+    libkf6archive-dev \
+    libkf6texteditor-dev \
+    libkf6dbusaddons-dev \
+    libmimalloc-dev \
     libopencv-dev \
     libpipewire-0.3-dev \
-    libqt5opengl5-dev \
+    libqt6opengl6-dev \
     libiceoryx-introspection-dev \
-    libqt5serialport5-dev \
-    libqt5svg5-dev \
+    libqt6svg6-dev \
     libswscale-dev \
     libusb-1.0-0-dev \
     libv4l-dev \
@@ -52,16 +50,13 @@ sudo apt install \
     systemd-dev \
     meson \
     ninja-build \
-    ocl-icd-opencl-dev \
-    pybind11-dev \
-    python3-dev \
-    python3-numpy \
-    qtbase5-dev \
-    qtmultimedia5-dev \
+    qt6-base-dev \
+    qt6-serialport-dev \
+    qt6-multimedia-dev \
     udev \
     uuid-dev
 mkdir build && cd build
-meson ..
+meson setup --buildtype=debugoptimized ..
 ninja
 sudo ninja install
 ```

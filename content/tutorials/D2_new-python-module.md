@@ -99,7 +99,7 @@ the run is launched.
 The latter is invoked by the user wanting to change module settings. Syntalos will provide the old settings, and it is up to the module to
 draw a GUI to enable the user to change any of its settings
 
-The example module will draw a simple GUI using tkInter, but for visual compatibility with the rest of the Syntalos UI, using PyQt5 or PySide
+The example module will draw a simple GUI using tkInter, but for visual compatibility with the rest of the Syntalos UI, using PyQt6 or PySide
 is recommended.
 
 ## 5. Test
