@@ -2,6 +2,7 @@
 title: Installation
 type: docs
 prev: docs/setup/
+weight: 10
 ---
 
 You can find the source code and precompiled binaries for some distribution
@@ -50,6 +51,9 @@ sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub
 # install Syntalos
 flatpak install flathub org.syntalos.syntalos
 ```
+
+If Syntalos reports missing host-side hardware support in the diagnostics, please also follow
+the instructions in [Hardware support for Flatpak users](./hardware-support).
 
 
 ## Installing via Packages

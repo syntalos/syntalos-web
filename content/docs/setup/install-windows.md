@@ -2,6 +2,7 @@
 title: Testing on Windows
 type: docs
 prev: docs/install/install
+weight: 30
 ---
 
 {{< callout type="error" >}}
