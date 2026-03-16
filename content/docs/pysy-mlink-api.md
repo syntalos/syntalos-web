@@ -2,6 +2,7 @@
 title: Python Module API
 type: docs
 prev: docs/timesync-verification
+weight: 40
 ---
 
 Syntalos provides a Python API to easily build new modules. Python modules do not

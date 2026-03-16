@@ -1,6 +1,7 @@
 ---
 title: Tsync binary file format
 prev: docs/timesync-verification
+weight: 50
 ---
 
 {{< callout type="info" >}}

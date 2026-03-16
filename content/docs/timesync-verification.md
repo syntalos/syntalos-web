@@ -1,5 +1,6 @@
 ---
 title: Verifying time delays
+weight: 30
 ---
 
 Syntalos does an excellent job at keeping devices synchronized and at keeping times,

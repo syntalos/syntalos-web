@@ -2,6 +2,7 @@
 title: Modules
 type: docs
 prev: docs/intro
+weight: 5
 sidebar:
   open: true
 ---

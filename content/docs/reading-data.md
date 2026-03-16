@@ -1,5 +1,6 @@
 ---
 title: Reading recorded data
+weight: 20
 ---
 
 Syntalos will store all data recorded with it in a defined directory structure, called "**EDL**" (Experiment Directory Layout).
