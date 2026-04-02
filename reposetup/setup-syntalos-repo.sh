@@ -5,7 +5,7 @@
 set -eu
 
 REPO_BASE_URL="https://dl.cloudsmith.io/public/syntalos/syntalos/deb"
-KEYRING_URL="https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/syntalos-repo.asc"
+KEYRING_URL="https://raw.githubusercontent.com/syntalos/syntalos-web/refs/heads/main/reposetup/syntalos-repo.asc"
 
 KEYRING_DIR=/etc/apt/keyrings
 KEYRING_FILE=$KEYRING_DIR/syntalos-repo.asc

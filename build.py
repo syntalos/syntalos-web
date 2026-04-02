@@ -205,6 +205,17 @@ class SyWebBuilder:
             os.path.join(result_dir, '.well-known', 'org.flathub.VerifiedApps.txt'),
         )
 
+        # copy package repository setup script
+        os.makedirs(os.path.join(result_dir, 'setup'), exist_ok=True)
+        self._copy_file(
+            'reposetup/setup-syntalos-repo.sh',
+            os.path.join(result_dir, 'setup', 'setup-syntalos-repo.sh'),
+        )
+        self._copy_file(
+            'reposetup/syntalos-repo.asc',
+            os.path.join(result_dir, 'setup', 'syntalos-repo.asc'),
+        )
+
         # delete files we don't want
         rm_files = []
         for fname in rm_files:
