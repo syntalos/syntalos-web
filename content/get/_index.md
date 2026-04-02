@@ -33,11 +33,11 @@ usually under "Details".
 
 Run this setup command in a terminal to set up the software source for Syntalos on Ubuntu:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
+curl -fsSL https://syntalos.org/setup/setup-syntalos-repo.sh | sudo sh
 ```
 
 The script will add an APT repository source to your system. You can
-[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+[inspect the source code](https://github.com/syntalos/syntalos-web/blob/main/reposetup/setup-syntalos-repo.sh)
 of the script to see exactly what it does.
 
 ### Install Syntalos
@@ -76,11 +76,11 @@ or run `cat /etc/os-release` in a terminal to see it.
 
 Run this setup command in a terminal to set up the software source for Syntalos on Debian:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
+curl -fsSL https://syntalos.org/setup/setup-syntalos-repo.sh | sudo sh
 ```
 
 The script will add an APT repository source to your system. You can
-[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+[inspect the source code](https://github.com/syntalos/syntalos-web/blob/main/reposetup/setup-syntalos-repo.sh)
 of the script to see exactly what it does.
 
 ### Install Syntalos

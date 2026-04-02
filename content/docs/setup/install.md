@@ -15,11 +15,11 @@ This is the recommended way to install Syntalos if you are on Debian or Ubuntu.
 Ensure you are at least on Debian 13 or Ubuntu 24.04, then run this setup command in a terminal
 to set up the software source for Syntalos:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/syntalos/repo/refs/heads/main/publish/setup-syntalos-repo.sh | sudo sh
+curl -fsSL https://syntalos.org/setup/setup-syntalos-repo.sh | sudo sh
 ```
 
 The script will add an APT repository source to your system. You can
-[inspect the source code](https://github.com/syntalos/repo/blob/main/publish/setup-syntalos-repo.sh)
+[inspect the source code](https://github.com/syntalos/syntalos-web/blob/main/reposetup/setup-syntalos-repo.sh)
 of the script to see exactly what it does.
 
 You can then install Syntalos with APT:
