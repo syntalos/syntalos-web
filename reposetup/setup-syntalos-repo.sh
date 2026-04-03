@@ -5,10 +5,10 @@
 set -eu
 
 REPO_BASE_URL="https://dl.cloudsmith.io/public/syntalos/syntalos/deb"
-KEYRING_URL="https://raw.githubusercontent.com/syntalos/syntalos-web/refs/heads/main/reposetup/syntalos-repo.asc"
+KEYRING_URL="https://syntalos.org/setup/syntalos-repo.gpg"
 
 KEYRING_DIR=/etc/apt/keyrings
-KEYRING_FILE=$KEYRING_DIR/syntalos-repo.asc
+KEYRING_FILE=$KEYRING_DIR/syntalos-repo.gpg
 SOURCES_FILE=/etc/apt/sources.list.d/syntalos.sources
 
 if [ "$(id -u)" -ne 0 ]; then

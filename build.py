@@ -212,8 +212,8 @@ class SyWebBuilder:
             os.path.join(result_dir, 'setup', 'setup-syntalos-repo.sh'),
         )
         self._copy_file(
-            'reposetup/syntalos-repo.asc',
-            os.path.join(result_dir, 'setup', 'syntalos-repo.asc'),
+            'reposetup/syntalos-repo.gpg',
+            os.path.join(result_dir, 'setup', 'syntalos-repo.gpg'),
         )
 
         # delete files we don't want
