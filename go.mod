@@ -1,5 +1,5 @@
-module github.com/imfing/hextra-starter-template
+module github.com/syntalos/syntalos-web
 
-go 1.21
+go 1.26
 
-require github.com/imfing/hextra v0.8.0 // indirect
+require github.com/imfing/hextra v0.11.3 // indirect
