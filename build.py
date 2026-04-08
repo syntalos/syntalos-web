@@ -120,7 +120,7 @@ class SyWebBuilder:
         with open(os.path.join(self._local_ws, 'syntalos-src', 'NEWS.md'), 'r') as f:
             news_data = f.read()
         with open(os.path.join(self._root_dir, 'content', 'get', 'changes.md'), 'w') as f:
-            f.write('---\ntitle: Version History\n---\n\n')
+            f.write('---\ntitle: Version History\ntoc: false\n---\n\n')
             f.write(news_data)
 
     def _adjust_copy_python_doc(self, src_fname, dst_fname):
