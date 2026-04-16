@@ -16,7 +16,6 @@ import glob
 from argparse import ArgumentParser
 from tempfile import NamedTemporaryFile
 
-
 SYNTALOS_GIT_URL = 'https://github.com/syntalos/syntalos.git'
 DOXYBOOK2_REL_URL = 'https://github.com/matusnovak/doxybook2/releases/download/v1.5.0/doxybook2-linux-amd64-v1.5.0.zip'
 
