@@ -30,7 +30,7 @@ The easiest way to start building a new module is to copy a template to have any
 A minimal Python module exists in the form of [example-py](https://github.com/syntalos/syntalos/tree/master/modules/example-py).
 Copy its directory to the location where you develop your module, and rename it to your chosen ID name.
 
-## 3. Adjust Metadata
+## 3a. Adjust Metadata
 
 Open the copied `module.toml` file in your new module directory:
 
@@ -45,25 +45,8 @@ icon = "penrose-py.svg"
 main = "mod-main.py"
 use_venv = false
 
-categories = 'sydevel;example'
+categories = ['sydevel', 'example']
 features = ['show-settings']
-
-[ports]
-
-    [[ports.in]]
-    data_type = 'Frame'
-    id = 'frames-in'
-    title = 'Frames'
-
-    [[ports.out]]
-    data_type = 'TableRow'
-    id = 'rows-out'
-    title = 'Indices'
-
-    [[ports.out]]
-    data_type = 'Frame'
-    id = 'frames-out'
-    title = 'Marked Frames'
 ```
 
 Using the `name` and `description` fields, you can set a human-readable name and short description for your module.
@@ -77,13 +60,28 @@ By specifying a Python file in `main`, you can select which Python file will be 
 `use_venv` to `true`, Syntalos will also run your module in its own virtual environment, and will install any Python dependencies
 from a `requirements.txt` file in the module's folder.
 
-Lastly, you need to define the module's input/output ports in the `ports` list. The `ports.in` key denotes an input port, while
-`ports.out` denotes an output port.
-Each port must have a `data_type` with the unique name of the data that it transfers. Refer to the Python Script module for a full list.
-The `id` of a port is a unique ID that can be used to reference the port in Python code, while `title` is the actual human-readable
-name that is displayed in the Syntalos GUI.
+## 3b. Register Ports in Python
 
-Please note that you might need to set additional port metadata depending on to which modules you plan to connect to. Some Modules expect specific port metadata, e.g., the built in [Plot Time Series]({{< ref "/docs/modules/plot-timeseries" >}}) module (consult its documentation for details).
+Ports are registered in your Python script. Add calls to `syl.register_input_port()` and `syl.register_output_port()`
+at **module level** (i.e. as top-level code, not inside any function), so Syntalos can discover the port topology as
+soon as the script is loaded:
+
+```python
+import syntalos_mlink as syl
+
+# Register input and output ports at module level.
+# This must run unconditionally when the script is loaded.
+syl.register_input_port('frames-in', 'Frames', 'Frame')
+syl.register_output_port('rows-out', 'Indices', 'TableRow')
+syl.register_output_port('frames-out', 'Marked Frames', 'Frame')
+```
+
+The three arguments to each call are: the port **ID** (used in `get_input_port` / `get_output_port`),
+a human-readable **title** shown in the Syntalos GUI, and the **data type** ID.
+
+Please note that you might need to set additional port metadata depending on which modules you plan
+to connect to. Some modules expect specific port metadata, e.g. the built-in
+[Plot Time Series]({{< ref "/docs/modules/plot-timeseries" >}}) module (consult its documentation for details).
 
 ## 4. Write your code
 
