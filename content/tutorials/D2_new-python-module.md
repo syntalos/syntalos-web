@@ -3,13 +3,13 @@ title: D2. Creating a new Python Module
 type: docs
 ---
 
-These instructions exit to create a new Python module from scratch.
+These instructions exist to create a new Python module from scratch.
 If you just want to run some custom Python code, using the existing [Python Script]({{< ref "/docs/modules/pyscript" >}})
 module is a much easier solution.
 
 ## 1. Module Location
 
-First, decice on a short, lower-case name for your modue. The name will be the unique identifier
+First, decide on a short, lower-case name for your module. The name will be the unique identifier
 for modules of your new type and must not be changed in future (or otherwise existing configurations might break).
 
 If you are compiling Syntalos manually, you can add your new Python module directly to the source tree in
@@ -62,22 +62,34 @@ from a `requirements.txt` file in the module's folder.
 
 ## 3b. Register Ports in Python
 
-Ports are registered in your Python script. Add calls to `syl.register_input_port()` and `syl.register_output_port()`
-at **module level** (i.e. as top-level code, not inside any function), so Syntalos can discover the port topology as
-soon as the script is loaded:
+Ports are registered via the `SyntalosLink` object returned by `syl.init_link()`. Port registration must happen
+when the script is started (i.e. inside `if __name__ == '__main__'` or at module-level),
+so Syntalos can discover the port topology before trying to restore saved project connections:
 
 ```python
+import sys
 import syntalos_mlink as syl
 
-# Register input and output ports at module level.
-# This must run unconditionally when the script is loaded.
-syl.register_input_port('frames-in', 'Frames', 'Frame')
-syl.register_output_port('rows-out', 'Indices', 'TableRow')
-syl.register_output_port('frames-out', 'Marked Frames', 'Frame')
+def main() -> int:
+    # Initialize the connection to Syntalos first.
+    syLink = syl.init_link()
+
+    # Register input and output ports via the link object.
+    # This must happen before await_data_forever() is called.
+    iport = syLink.register_input_port('frames-in', 'Frames', syl.DataType.Frame)
+    oport = syLink.register_output_port('rows-out', 'Results', syl.DataType.TableRow)
+
+    # ... register callbacks, then run the event loop
+    syLink.await_data_forever()
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
 ```
 
-The three arguments to each call are: the port **ID** (used in `get_input_port` / `get_output_port`),
-a human-readable **title** shown in the Syntalos GUI, and the **data type** ID.
+The three arguments to each registration call are: the port **ID** (a short, unique string used to identify the port),
+a human-readable **title** shown in the Syntalos GUI, and a **data type** constant from `syl.DataType`
+(e.g. `syl.DataType.Frame`, `syl.DataType.TableRow`, `syl.DataType.IntSignalBlock`).
 
 Please note that you might need to set additional port metadata depending on which modules you plan
 to connect to. Some modules expect specific port metadata, e.g. the built-in
@@ -86,19 +98,50 @@ to connect to. Some modules expect specific port metadata, e.g. the built-in
 ## 4. Write your code
 
 After setting all metadata, it is time to actually write your module's code!
-Open `mod-main.py` for an example. The Python module has the same familiar `prepare()`, `start()`, `run()` and `stop()`
-functions like a Python Script module, that Syntalos will call at the appropriate time.
-Ports are also accessed the same way, and data is also submitted the same way. Refer to the [syntalos_mlink API documentation]({{< ref "/docs/pysy-mlink-api" >}})
-for a full reference of all available methods.
+Open `mod-main.py` for a complete example. A Python module is structured around a `main()` entry point
+that initializes the Syntalos link, registers ports and callbacks, then calls `syLink.await_data_forever()`
+to hand over control to the built-in event loop (or `syLink.await_data()` if you need more control).
 
-In addition to the known methods, a Python module also has a `set_settings(settings: bytes)` and `change_settings(old_settings: bytes)`
-entry point. The former is called before a run is started with the module's settings serialized as bytes, in order for them to be applied before
-the run is launched.
-The latter is invoked by the user wanting to change module settings. Syntalos will provide the old settings, and it is up to the module to
-draw a GUI to enable the user to change any of its settings
+### Lifecycle callbacks
 
-The example module will draw a simple GUI using tkInter, but for visual compatibility with the rest of the Syntalos UI, using PyQt6 or PySide
-is recommended.
+Register lifecycle callbacks on the `SyntalosLink` object before calling `await_data_forever()`:
+
+```python
+syLink.on_prepare = mod.prepare   # called before each run; return True to signal readiness
+syLink.on_start   = mod.start     # called when acquisition begins
+syLink.on_stop    = mod.stop      # called when the run ends (always called)
+```
+
+### Settings
+
+Settings are stored and loaded by Syntalos as an opaque `bytes` object. Register two callbacks to
+handle serialization and deserialization:
+
+```python
+# Called by Syntalos to serialize the module's settings (e.g. when a project is saved).
+# Receives the base project directory as a string (in case the module needs to reference
+# other files); must return settings as bytes.
+syLink.on_save_settings = lambda base_dir: bytes(json.dumps(my_settings), 'utf-8')
+
+# Called by Syntalos to restore previously saved settings.
+# Receives the settings bytes and base project directory; return True on success.
+syLink.on_load_settings = lambda data, base_dir: load_settings_from_bytes(data)
+```
+
+### Settings GUI
+
+If your module has `show-settings` listed in its `features` in `module.toml`, Syntalos will call
+`syLink.on_show_settings` when the user clicks the settings button. Register a zero-argument callable:
+
+```python
+syLink.on_show_settings = self._show_settings_dialog
+```
+
+Inside `_show_settings_dialog()`, draw a GUI using PyQt6 or PySide6 (recommended for visual
+compatibility with the rest of the Syntalos UI) to let the user adjust settings.
+
+Refer to the [syntalos_mlink Python API documentation]({{< ref "/docs/pysy-mlink-api" >}}) for a full
+reference of all available methods and data types.
 
 ## 5. Test
 

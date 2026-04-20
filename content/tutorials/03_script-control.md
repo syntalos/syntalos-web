@@ -47,11 +47,11 @@ input port of your *Audio Source* as usual!
 
 Now we can look at the Python script itself! The default script is larger than it needs to be due to annotations
 to help you get started. Writing the script is a lot simpler than it may first appear though:
-4 functions exists that Syntalos may call at different stages of an experiment run.
-The `prepare()` function is called when the experimence is started, but before all modules are ready, the
-`start()` function is called immediately before data starts being acquired, `run` is called when the experiment
-is started and mainly handles communication with Syntalos, and `stop()` is called when the experiment is stopped.
-We are primarily concerned with the `prepare()` function here, as we do not need to prepare any data or device
+4 functions exist that Syntalos may call at different stages of an experiment run.
+The `prepare()` function is called when the experiment is being prepared, but before all modules are fully ready;
+`start()` is called immediately before data acquisition begins; `run` is called when the experiment
+is started and mainly handles communication with Syntalos; and `stop()` is called when the experiment is stopped.
+We are primarily concerned with the `start()` function here, as we do not need to prepare any data or device
 in our script. Interaction with Syntalos happens via the `syntalos_mlink` module, which is imported by default
 as `syl`.
 
