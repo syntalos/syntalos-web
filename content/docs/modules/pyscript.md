@@ -60,6 +60,10 @@ def prepare() -> bool:
     oport_tab.set_metadata_value('table_header', ['Time Received', 'Frame Time'])
     oport_tab.set_metadata_value('data_name_proposal', 'events/table')
 
+    # copy the framerate from input to output
+    oport_frame.set_metadata_value('framerate', iport_frame.metadata['framerate'])
+    oport_frame.set_metadata_value_size('size', iport_frame.metadata['size'])
+
     return True
 
 
@@ -68,10 +72,7 @@ def start():
     Access to the timer is available, and data can be sent via ports.
     You can *not* change any port metadata anymore from this point onward.
     This function should be fast, many modules are already running at this point."""
-
-    # copy the framerate from input to output
-    oport_frame.set_metadata_value('framerate', iport_frame.metadata['framerate'])
-    oport_frame.set_metadata_value_size('size', iport_frame.metadata['size'])
+    pass
 
 
 def on_new_frame_data(frame):
