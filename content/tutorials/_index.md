@@ -16,6 +16,7 @@ introduce some of Syntalos' functionality.
 * [02. First Images]({{< ref "02_first-images" >}})
 * [03. Customization with Python]({{< ref "03_script-control" >}})
 * [04. Controlling simple devices]({{< ref "04_firmata-interface" >}})
+* [05. Multi-machine experiments with Network Control]({{< ref "05_network-control" >}})
 
 ### Videos
 
