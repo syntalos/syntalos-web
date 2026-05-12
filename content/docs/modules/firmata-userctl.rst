@@ -37,12 +37,12 @@ Ports
 
    * - 🠺Firmata Input
      - In
-     - ``FirmataData``
-     - Read data from a `Firmata Data` port of a Firmata IO module.
+     - ``LineReading``
+     - Read data from the *Line Readings* port of a Firmata IO module.
    * - Firmata Control🠺
      - Out
-     - ``FirmataControl``
-     - Write data to a `Firmata Control` port of a Firmata IO module.
+     - ``LineCommand``
+     - Write line commands to the *Line Control* port of a Firmata IO module.
 
 
 Stream Metadata

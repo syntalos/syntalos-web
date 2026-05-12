@@ -16,6 +16,13 @@ at [our Maze Hardware site](https://github.com/bothlab/maze-hardware/blob/main/R
 This tutorial will require some hardware tinkering and a bit of coding in Syntalos to be useful,
 so it is for intermediate users.
 
+{{< callout type="info" >}}
+Starting with Syntalos 3.0, the Firmata-specific stream types were replaced by the
+protocol-agnostic ``LineCommand`` / ``LineReading`` types and the matching
+``HwOutputLine`` / ``HwInputLine`` Python convenience wrappers. If you are porting an existing
+2.x project, see the [Syntalos 2.0 → 3.0 Porting Guide]({{< ref "/docs/porting-2to3" >}}).
+{{< /callout >}}
+
 ## 1. Prepare your Arduino
 
 Open your Arduino IDE. The navigate to *Sketch → Include Library → Manage Libraries*.
@@ -33,7 +40,7 @@ The Arduino is now ready to be used, so let's test it!
 
 Create a new Syntalos project and add a *Python Script*, *Firmata User Control*, *Firmata IO* and *Table* module.
 Enter the settings of the Python module and edit its ports. Add a `firmata-in` input port with input data
-type `FirmataData` and an output port of type `FirmataControl` named `firmatactl-out`.
+type `LineReading` and an output port of type `LineCommand` named `firmatactl-out`.
 You can also add an output port of type `TableRow` named `table-out` for later use.
 The we create some boilerplate code for the Python module, which does nothing, for now:
 
@@ -41,9 +48,9 @@ The we create some boilerplate code for the Python module, which does nothing, f
 import syntalos_mlink as syl
 
 
-fm_iport = sy.get_input_port('firmata-in')
-fm_oport = sy.get_input_port('firmatactl-out')
-tab_oport = sy.get_input_port('table-out')
+fm_iport = syl.get_input_port('firmata-in')
+fm_oport = syl.get_output_port('firmatactl-out')
+tab_oport = syl.get_output_port('table-out')
 
 
 def prepare() -> bool:
@@ -84,7 +91,7 @@ For testing purposes, we wire up an LED to one of its free ports.
 We can then already hit the *Ephemeral Run* button of Syntalos, to start a run without saving any data.
 
 Double-click on the `Firmata User Control` module to bring up its display window. There, you can read
-inputs and write to outputs. Click on the *Plus* sign to add a new *Menual Output Control* and add
+inputs and write to outputs. Click on the *Plus* sign to add a new *Manual Output Control* and add
 a digital output pin.
 On the *Received Input* side, select an analog, or digital input. Select the Arduino pins that you want to read
 or write from, and change the values of your output.
@@ -109,7 +116,7 @@ when we sent the command to get the LED to blink.
 
 This is the code we need to achieve that:
 
-```python {linenos=table,hl_lines=[10,16,24,33]}
+```python {linenos=table,hl_lines=[10,20,29,38]}
 import syntalos_mlink as syl
 
 
@@ -119,8 +126,12 @@ LED_INTERVAL_MSEC = 2000
 
 
 fm_iport = syl.get_input_port('firmata-in')
-fm_oport = syl.get_input_port('firmatactl-out')
-tab_oport = syl.get_input_port('table-out')
+fm_oport = syl.get_output_port('firmatactl-out')
+tab_oport = syl.get_output_port('table-out')
+
+# pin 8 is wired to our LED; OutputLine just captures the identity, it does
+# not emit any command on construction.
+led = syl.HwOutputLine(fm_oport, line_id=8)
 
 
 def prepare() -> bool:
@@ -132,8 +143,9 @@ def prepare() -> bool:
 
 
 def start():
-    # set pin 8 as LED output pin
-    fm_oport.firmata_register_digital_pin(8, 'led1', True)
+    # configure pin 8 as a digital output on the Firmata device. This must
+    # be called at the start of every run.
+    led.send_register()
 
     # start sending our pulse command periodically
     trigger_led_pulse()
@@ -142,7 +154,7 @@ def start():
 def trigger_led_pulse():
     tab_oport.submit([syl.time_since_start_msec(),
                       'led-pulse'])
-    fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
+    led.pulse(LED_DURATION_MSEC)
 
     if not syl.is_running():
         return False
@@ -150,25 +162,32 @@ def trigger_led_pulse():
     # run this function again after some delay
     syl.schedule_delayed_call(LED_INTERVAL_MSEC, trigger_led_pulse)
 
+
 def stop():
     # ensure LED is off once we stop
-    fm_oport.firmata_submit_digital_value('led1', False)
+    led.set_value(False)
 ```
 
-Initially, in line 10, we need to fetch references to our input/output ports (using only the latter for now), so we
-can use them in later parts of the script. The `prepare()` function is called before the experiment run is actually started.
-In it we can set metadata on our respective ports. In our case we set a table header using the `table_header` property on the
-table row output port, and also suggest a name to save the resulting CSV table under using the `data_name_proposal` property.
+In line 11, we fetch references to our input/output ports (using only the latter for now), so we
+can use them in later parts of the script. We then construct a `HwOutputLine` (line 15) that ties the
+LED's hardware line ID to our control output port. Construction is cheap and does not emit anything —
+it only captures identity.
 
-Then, once the experiment is started, we can actually send messages from our module to other modules. In the `start()` routine,
-we first register pin `8` on the Arduino as digital output pin (adjust this if your LED is on a different pin).
+The `prepare()` function is called before the experiment run is actually started.
+In it we can set metadata on our respective ports. In our case we set a table header using the `table_header`
+property on the table row output port, and also suggest a name to save the resulting CSV table under using
+the `data_name_proposal` property.
+
+Then, once the experiment is started, we configure the LED line as an output on the Firmata device by
+calling `led.send_register()`. **This must be done at the start of every run** — Firmata IO clears its
+internal pin table between runs, so prior registrations do not survive.
 
 {{< callout type="info" >}}
-This example uses convenience methods to handle digital pins. For example, the call to
-`firmata_register_digital_pin()` on the Firmata control port could also be written as:
+``HwOutputLine`` is a convenience wrapper. The equivalent low-level call is:
+
 ```python
-ctl = syl.new_firmatactl_with_id_name(syl.FirmataCommandKind.NEW_DIG_PIN, 8, 'led1')
-ctl.is_output = True
+ctl = syl.new_line_command(syl.LineCommandKind.SET_MODE, line_id=8)
+ctl.flags = syl.LineModeFlags.IS_OUTPUT
 fm_oport.submit(ctl)
 ```
 Not every action has convenience methods, but the most common operations do.
@@ -177,7 +196,7 @@ Not every action has convenience methods, but the most common operations do.
 Then, we launch our custom function `trigger_led_pulse()` where the actual logic happens to make the LED blink.
 In it, we send a new table row to the *Table* module for storage & display, using the `syl.time_since_start_msec()` function
 to get the current time since the experiment run was started and naming the event `led-pulse`. You should see these two values
-show up in the table later. Then, we actually send a message to the *Firmata IO* module to instruct it to set the LED pin `HIGH`
+show up in the table later. Then, we actually send a command to the *Firmata IO* module to instruct it to set the LED pin `HIGH`
 for the time `LED_DURATION_MSEC`.
 
 To introduce some delay before sending another such command, we instruct the `trigger_led_pulse()` function to be called again
@@ -185,8 +204,8 @@ after `LED_INTERVAL_MSEC` via `syl.schedule_delayed_call(LED_INTERVAL_MSEC, trig
 This is repeated until the experiment has been stopped by the user.
 
 {{< callout type="warning" >}}
-Keep in mid that when submitting data on a port, you are **not** calling the respective task immediately - you are
-merely enqueueing an instructions for the other module to act upon at a later time.
+Keep in mind that when submitting data on a port, you are **not** calling the respective task immediately - you are
+merely enqueueing an instruction for the other module to act upon at a later time.
 Realistically, Syntalos will execute the queued action instantly with little delay, but Syntalos can not make any
 real-time guarantees for inter-module communication.
 If you need those, consider using dedicated hardware or an FPGA, and control those components with Syntalos instead.
@@ -198,11 +217,11 @@ If you hit the *Run* button, the experiment should run and the LED should blink 
 ## 5. Automation: Reading Data
 
 Now, let's read some data and let an LED blink for each piece of data that was received!
-We assume you have a switch placed on one Ardino pin, and an LED on another for testing purposes.
+We assume you have a switch placed on one Arduino pin, and an LED on another for testing purposes.
 
 The code we need for this looks very similar to our previous one:
 
-```python {linenos=table,hl_lines=[19,26,40]}
+```python {linenos=table,hl_lines=[14,15,30,39,45]}
 import syntalos_mlink as syl
 
 
@@ -211,8 +230,13 @@ LED_DURATION_MSEC = 500
 
 
 fm_iport = syl.get_input_port('firmata-in')
-fm_oport = syl.get_input_port('firmatactl-out')
-tab_oport = syl.get_input_port('table-out')
+fm_oport = syl.get_output_port('firmatactl-out')
+tab_oport = syl.get_output_port('table-out')
+
+# Hardware-line handles. Construction captures port + line_id; we call
+# send_register() in start() to configure the lines at the start of each run.
+switch = syl.HwInputLine(fm_oport, line_id=7)
+led    = syl.HwOutputLine(fm_oport, line_id=8)
 
 
 def prepare() -> bool:
@@ -221,34 +245,28 @@ def prepare() -> bool:
     tab_oport.set_metadata_value('data_name_proposal', 'events/led_status')
 
     # call a function once new data was received on this input port
-    fm_iport.on_data = on_new_firmata_data
+    fm_iport.on_data = on_new_line_reading
 
     return True
 
 
 def start():
-    # set pin 7 as input pin
-    fm_oport.firmata_register_digital_pin(7, 'switch', False)
-
-    # set pin 8 as LED output pin
-    fm_oport.firmata_register_digital_pin(8, 'led1', True)
+    switch.send_register()
+    led.send_register()
 
 
-def on_new_firmata_data(data):
+def on_new_line_reading(data):
     if data is None:
         return
 
-    # we are only interested in digital input
-    if not data.is_digital:
-        return
     # we only want to look at the 'switch' pin
-    if data.pin_name != 'switch':
+    if data.line_id != switch.line_id:
         return
 
     if data.value:
         tab_oport.submit([syl.time_since_start_msec(),
                             'switch-on'])
-        fm_oport.firmata_submit_digital_pulse('led1', LED_DURATION_MSEC)
+        led.pulse(LED_DURATION_MSEC)
     else:
         tab_oport.submit([syl.time_since_start_msec(),
                             'switch-off'])
@@ -256,17 +274,18 @@ def on_new_firmata_data(data):
 
 def stop():
     # ensure LED is off once we stop
-    fm_oport.firmata_submit_digital_value('led1', False)
+    led.set_value(False)
 ```
 
-In `start()` we now additionally register pin `7` as an input pin this time.
+In `start()` we now register both lines: pin `7` as an input (the switch) and pin `8` as an output (the LED).
 We also need to read input from our Firmata device now, for which we registered `fm_iport` as input port.
-Every input port in Syntalos' Python interface has a `on_data` property which you can assign a custom function to,
-to be called when new data is received. We assign our own `on_new_firmata_data()` function in this example.
+Every input port in Syntalos' Python interface has an `on_data` property which you can assign a custom function to,
+to be called when new data is received. We assign our own `on_new_line_reading()` function in this example.
 
-In `on_new_firmata_data()`, we first check if the received `data` is valid (it may be `None` to signal that a run
-is being stopped right now). Next, we check if we have data from the right pin by checking if it is is digital and
-if it is the pin that we previously labelled "`switch`". We ignore any other data (there should not be any, but just in case...).
+In `on_new_line_reading()`, we first check if the received `data` is valid (it may be `None` to signal that a run
+is being stopped right now). Next, we match the reading against the switch's line ID by comparing `data.line_id`
+to `switch.line_id`. Since the input port can in principle carry readings from any line, this match is what tells us
+the reading came from our switch.
 Then, if we receive a `True` value, we command the LED to blink for half a second and log that fact in our table, otherwise
 we just log the fact that the switch is off.
 

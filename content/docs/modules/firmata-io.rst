@@ -35,14 +35,14 @@ Ports
      - Data Type
      - Description
 
-   * - 🠺Firmata Control
+   * - 🠺Line Control
      - In
-     - ``FirmataControl``
-     - Control commands for Firmata
-   * - Firmata Data🠺
+     - ``LineCommand``
+     - Hardware-line commands (set mode, write digital, pulse, ...) routed to the Firmata device.
+   * - Line Readings🠺
      - Out
-     - ``FirmataData``
-     - Data read from the Firmata device.
+     - ``LineReading``
+     - Timestamped scalar readings from the Firmata device's input pins.
 
 
 Stream Metadata
