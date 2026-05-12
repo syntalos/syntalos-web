@@ -1,5 +1,5 @@
 ---
-title: Syntalos 2.0 → 3.0 Porting Guide
+title: Syntalos 2.x → 3.0 Porting
 type: docs
 weight: 35
 ---
@@ -10,16 +10,16 @@ migrate existing setups.
 
 ## Overview of breaking changes
 
-| Area | 2.x | 3.0 |
-| ---- | --- | --- |
-| Stream type (outbound) | `FirmataControl` | `LineCommand` |
-| Stream type (inbound) | `FirmataData` | `LineReading` |
-| Command-kind enum | `FirmataCommandKind` | `LineCommandKind` |
-| Pin-mode flags | implicit fields (`isOutput`, `isPullUp`) | `LineModeFlags` bitfield |
-| Hardware addressing | `pinId` (uint8) + `pinName` (string) | `lineId` (uint16) |
-| Pulse duration | `value` field (ms) | `duration` field (`microseconds_t`) |
-| Python — convenience helpers | `OutputPort.firmata_*` methods | `syl.HwOutputLine` / `syl.HwInputLine` classes |
-| Python — low-level constructors | `syl.new_firmatactl_with_id_name` etc. | `syl.new_line_command` |
+| Area                            | 2.x                                      | 3.0                                            |
+|---------------------------------|------------------------------------------|------------------------------------------------|
+| Stream type                     | `FirmataControl`                         | `LineCommand`                                  |
+| Stream type                     | `FirmataData`                            | `LineReading`                                  |
+| Command-kind enum               | `FirmataCommandKind`                     | `LineCommandKind`                              |
+| Pin-mode flags                  | implicit fields (`isOutput`, `isPullUp`) | `LineModeFlags` bitfield                       |
+| Hardware addressing             | `pinId` (uint8) + `pinName` (string)     | `lineId` (uint16)                              |
+| Pulse duration                  | `value` field (ms)                       | `duration` field (`microseconds_t`)            |
+| Python — convenience helpers    | `OutputPort.firmata_*` methods           | `syl.HwOutputLine` / `syl.HwInputLine` classes |
+| Python — low-level constructors | `syl.new_firmatactl_with_id_name` etc.   | `syl.new_line_command`                         |
 
 The motivation: the old type names tied Syntalos's stream system to one
 specific microcontroller protocol. Other devices (Open-Ephys digital I/O,
@@ -29,7 +29,7 @@ required Firmata-specific naming to participate. The 3.0 types are
 protocol-agnostic; modules that emit or consume them work against any
 backend that implements the line semantics.
 
-## 1. PyScript: porting Python modules
+## 1. Porting Python modules & PyScript scripts
 
 ### Port types
 
@@ -74,8 +74,8 @@ led    = syl.HwOutputLine(fm_oport, line_id=8)
 
 def start():
     # Explicitly register at every run
-    switch.send_register()
-    led.send_register()
+    switch.send_mode()
+    led.send_mode()
 
 def trigger():
     led.pulse(duration_msec=50)
@@ -84,13 +84,13 @@ def trigger():
 
 Notes:
 
-- **`send_register()` must be called at the start of every run.**
+- **`send_mode()` must be called at the start of every run.**
   Constructing the `HwOutputLine` / `HwInputLine` once in
   module scope and re-registering in `start()` is the recommended pattern.
 - The `line_id` is the only identity — there is no `pin_name` anymore.
   If you used names to disambiguate readings, match on
   `reading.line_id == my_line.line_id` instead.
-- `OutputLine(port, line_id, analog=True)` exposes `set_analog_value(code)`
+- `HwOutputLine(port, line_id, analog=True)` exposes `set_analog_value(code)`
   for DAC-style outputs. Calling `set_value` or `pulse` on an analog line
   (or `set_analog_value` on a digital line) raises a clear `SyntalosPyError`.
 
@@ -98,13 +98,12 @@ Notes:
 
 Field renames in the inbound type:
 
-| 2.x | 3.0 |
-| --- | --- |
-| `data.pin_id` | `data.line_id` |
-| `data.pin_name` | *removed* — match `data.line_id` against your `HwInputLine.line_id` |
-| `data.is_digital` | *removed* — the receiver already knows |
-| `data.value` | `data.value` (now an integer up to 2^32) |
-| `data.time` | `data.time` (unchanged) |
+| 2.x               | 3.0                                                                 |
+|-------------------|---------------------------------------------------------------------|
+| `data.pin_id`     | `data.line_id`                                                      |
+| `data.pin_name`   | *removed* — match `data.line_id` against your `HwInputLine.line_id` |
+| `data.is_digital` | *removed* — the receiver already knows                              |
+| `data.value`      | `data.value` (now an integer up to 2^32)                            |
 
 **Before (2.x):**
 
@@ -130,11 +129,11 @@ def on_new_line_reading(data):
 
 ### Low-level constructors
 
-| 2.x | 3.0 |
-| --- | --- |
+| 2.x                                                   | 3.0                                            |
+|-------------------------------------------------------|------------------------------------------------|
 | `syl.new_firmatactl_with_id_name(kind, pin_id, name)` | `syl.new_line_command(kind, line_id, value=0)` |
-| `syl.new_firmatactl_with_id(kind, pin_id)` | `syl.new_line_command(kind, line_id, value=0)` |
-| `syl.new_firmatactl_with_name(kind, name)` | *removed* — use `line_id` |
+| `syl.new_firmatactl_with_id(kind, pin_id)`            | `syl.new_line_command(kind, line_id, value=0)` |
+| `syl.new_firmatactl_with_name(kind, name)`            | *removed* — use `line_id`                      |
 
 Most user code should not need these; `HwOutputLine` / `HwInputLine` cover the
 common operations. The standalone constructor is still useful when you need

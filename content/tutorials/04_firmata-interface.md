@@ -145,7 +145,7 @@ def prepare() -> bool:
 def start():
     # configure pin 8 as a digital output on the Firmata device. This must
     # be called at the start of every run.
-    led.send_register()
+    led.send_mode()
 
     # start sending our pulse command periodically
     trigger_led_pulse()
@@ -179,7 +179,7 @@ property on the table row output port, and also suggest a name to save the resul
 the `data_name_proposal` property.
 
 Then, once the experiment is started, we configure the LED line as an output on the Firmata device by
-calling `led.send_register()`. **This must be done at the start of every run** — Firmata IO clears its
+calling `led.send_mode()`. **This must be done at the start of every run** — Firmata IO clears its
 internal pin table between runs, so prior registrations do not survive.
 
 {{< callout type="info" >}}
@@ -234,7 +234,7 @@ fm_oport = syl.get_output_port('firmatactl-out')
 tab_oport = syl.get_output_port('table-out')
 
 # Hardware-line handles. Construction captures port + line_id; we call
-# send_register() in start() to configure the lines at the start of each run.
+# send_mode() in start() to configure the lines at the start of each run.
 switch = syl.HwInputLine(fm_oport, line_id=7)
 led    = syl.HwOutputLine(fm_oport, line_id=8)
 
@@ -251,8 +251,8 @@ def prepare() -> bool:
 
 
 def start():
-    switch.send_register()
-    led.send_register()
+    switch.send_mode()
+    led.send_mode()
 
 
 def on_new_line_reading(data):
