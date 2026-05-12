@@ -139,3 +139,12 @@ Most user code should not need these; `HwOutputLine` / `HwInputLine` cover the
 common operations. The standalone constructor is still useful when you need
 a raw `LineCommand` (for example to fill in `extra` for a
 `DeviceSpecific` payload).
+
+
+## 2. Stream data type changes
+
+The precision of `FloatSignalBlock` has changed from `double` to `float`.
+This has some algorithmic advantages and matches what most DAQ systems output.
+This also means that both `IntSignalBlock` and `FloatSignalBlock` are 32-bit now,
+which is matching expectations and allows us to introduce more data types easier
+at a later time.
