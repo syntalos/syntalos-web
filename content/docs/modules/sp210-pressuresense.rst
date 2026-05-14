@@ -43,11 +43,11 @@ Ports
 
    * - Pressure Data🠺
      - Out
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Received pressure values, in mPa.
    * - Temperature Data🠺
      - Out
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Reported temperature, in °C.
 
 

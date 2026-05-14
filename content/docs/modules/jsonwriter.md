@@ -85,14 +85,14 @@ making them distinguishable.
 
 | Name                | Direction | Data Type         | Description         |
 |---------------------|-----------|-------------------|---------------------|
-| 🠺Float Signals      | In        | `FloatSignalBlock`| Float signal data   |
-| 🠺Integer Signals    | In        | `IntSignalBlock`  | Integer signal data |
+| 🠺Float Signals      | In        | `SignalBlockF32`  | Float signal data   |
+| 🠺Integer Signals    | In        | `SignalBlockI32`  | Integer signal data |
 | 🠺Table Rows         | In        | `TableRow`        | Table rows to save  |
 
 
 ## Stream Metadata
 
-No output streams are generated, but input streams of type `FloatSignalBlock`/`IntSignalBlock` must have
+No output streams are generated, but input streams of type `SignalBlockF32`/`SignalBlockI32` must have
 `time_unit`, `data_unit` and `signal_names` set.
 
 For `TableRow` data, the `table_header` metadata entry has to be set.

@@ -39,11 +39,11 @@ Ports
 
    * - [Channel]🠺
      - Out
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Exported values of user-defined, select channels.
    * - [Channel]🠺
      - Out
-     - ``IntSignalBlock``
+     - ``SignalBlockI32``
      - Exported values of user-defined, select channels.
 
 

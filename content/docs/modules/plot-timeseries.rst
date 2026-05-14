@@ -45,11 +45,11 @@ Ports
 
    * - 🠺[Float]
      - In
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Float signal inputs
    * - 🠺[Integer]
      - In
-     - ``IntSignalBlock``
+     - ``SignalBlockI32``
      - Integer signal inputs
 
 

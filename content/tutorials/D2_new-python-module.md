@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
 The three arguments to each registration call are: the port **ID** (a short, unique string used to identify the port),
 a human-readable **title** shown in the Syntalos GUI, and a **data type** constant from `syl.DataType`
-(e.g. `syl.DataType.Frame`, `syl.DataType.TableRow`, `syl.DataType.IntSignalBlock`).
+(e.g. `syl.DataType.Frame`, `syl.DataType.TableRow`, `syl.DataType.SignalBlockI32`).
 
 Please note that you might need to set additional port metadata depending on which modules you plan
 to connect to. Some modules expect specific port metadata, e.g. the built-in

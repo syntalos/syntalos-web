@@ -143,8 +143,23 @@ a raw `LineCommand` (for example to fill in `extra` for a
 
 ## 2. Stream data type changes
 
-The precision of `FloatSignalBlock` has changed from `double` to `float`.
+### Signal block type renames
+
+All signal block data types have been renamed for clarity and to reflect their
+exact bit width:
+
+| 2.x                 | 3.0              |
+|---------------------|------------------|
+| `FloatSignalBlock`  | `SignalBlockF32` |
+| `IntSignalBlock`    | `SignalBlockI32` |
+| `UInt16SignalBlock` | `SignalBlockU16` |
+
+This affects both C++ code and the Python `syl.DataType.*` constants.
+
+### Float precision change
+
+The precision of `SignalBlockF32` (formerly `FloatSignalBlock`) has changed from
+`double` (64-bit) to `float` (32-bit).
 This has some algorithmic advantages and matches what most DAQ systems output.
-This also means that both `IntSignalBlock` and `FloatSignalBlock` are 32-bit now,
-which is matching expectations and allows us to introduce more data types easier
-at a later time.
+Both `SignalBlockI32` and `SignalBlockF32` are now consistently 32-bit, which
+also allows further signal block types to be added more easily in the future.

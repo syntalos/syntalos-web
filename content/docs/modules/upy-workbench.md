@@ -15,7 +15,7 @@ You need to flash a microcontroller with MicroPython to get started. A cheap and
 ## Ports
 
 * A custom number of input ports for `TableRow` tabular data can be registered.
-* Data can be retrieved either as tabular `TableRow` data, `FloatSignalBlock` or `IntSignalBlock`
+* Data can be retrieved either as tabular `TableRow` data, `SignalBlockF32` or `SignalBlockI32`
 
 Input/output ports can be configured in the port editor.
 

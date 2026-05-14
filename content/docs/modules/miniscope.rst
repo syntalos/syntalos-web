@@ -35,7 +35,7 @@ Ports
 
    * - Orientation Vector🠺
      - Out
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Returns the orientation sensor quaternions (qw, qx, qy, qz) as vector.
    * - Orientation Rows🠺
      - Out

@@ -35,7 +35,7 @@ Ports
 
    * - 🠺Quaternions
      - In
-     - ``FloatSignalBlock``
+     - ``SignalBlockF32``
      - Unit quaternion vector input
 
 

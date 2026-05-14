@@ -23,15 +23,15 @@ read the array data.
 
 ## Ports
 
-| Name             | Direction | Data Type          | Description         |
-|------------------|-----------|--------------------|---------------------|
-| 🠺Float64 Signals | In        | `FloatSignalBlock` | Float signal data   |
-| 🠺Int32 Signals   | In        | `IntSignalBlock`   | Integer signal data |
+| Name             | Direction | Data Type        | Description         |
+|------------------|-----------|------------------|---------------------|
+| 🠺Float64 Signals | In        | `SignalBlockF32` | Float signal data   |
+| 🠺Int32 Signals   | In        | `SignalBlockI32` | Integer signal data |
 
 
 ## Stream Metadata
 
-No output streams are generated, but for input streams of type `FloatSignalBlock`/`IntSignalBlock` the
+No output streams are generated, but for input streams of type `SignalBlockF32`/`SignalBlockI32` the
 following metadata will be handled explicitly:
 
 | Key            | Type         | Required?   | Description                                       |

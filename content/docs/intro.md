@@ -98,7 +98,7 @@ Syntalos is split into 7 components with different purposes:
 #### Public Interface Shared Libraries
 
 **libsyntalos-datactl**: This shared library contains Syntalos' data type system and data management functions. It defines data types that can be
-exchanged using data streams between modules (such as `Frame`, `IntSignalBlock`, etc.), as well as classes to write EDL data, *tsync* files and
+exchanged using data streams between modules (such as `Frame`, `SignalBlockI32`, etc.), as well as classes to write EDL data, *tsync* files and
 time synchronization algorithms. It also contains the clock implementation of Syntalos and is used by all other components of the program.
 
 **libsyntalos-mlink**: This shared library provides the "module link" interface implementation that allows users to create new out-of-process
