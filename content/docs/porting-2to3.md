@@ -4,30 +4,19 @@ type: docs
 weight: 35
 ---
 
-Syntalos 3.0 contains a small number of breaking changes that affect projects
+Syntalos 3.0 contains a small number of **breaking changes** that affect projects
 authored against the 2.x series. This page summarizes what changed and how to
 migrate existing setups.
 
-## Overview of breaking changes
+## At a glance
 
-| Area                            | 2.x                                      | 3.0                                            |
-|---------------------------------|------------------------------------------|------------------------------------------------|
-| Stream type                     | `FirmataControl`                         | `LineCommand`                                  |
-| Stream type                     | `FirmataData`                            | `LineReading`                                  |
-| Command-kind enum               | `FirmataCommandKind`                     | `LineCommandKind`                              |
-| Pin-mode flags                  | implicit fields (`isOutput`, `isPullUp`) | `LineModeFlags` bitfield                       |
-| Hardware addressing             | `pinId` (uint8) + `pinName` (string)     | `lineId` (uint16)                              |
-| Pulse duration                  | `value` field (ms)                       | `duration` field (`microseconds_t`)            |
-| Python — convenience helpers    | `OutputPort.firmata_*` methods           | `syl.HwOutputLine` / `syl.HwInputLine` classes |
-| Python — low-level constructors | `syl.new_firmatactl_with_id_name` etc.   | `syl.new_line_command`                         |
+- Stream types are now protocol-agnostic: `LineCommand` / `LineReading` replace
+  `FirmataControl` / `FirmataData`.
+- Hardware addressing in `Line*` is ID-based only: `line_id` replaces `pin_id` +
+  `pin_name`.
+- Python port helper APIs for `Line*` are redesigned as `syl.HwOutputLine` / `syl.HwInputLine`.
+- Signal block types are renamed to include their precision, and `SignalBlockF32` is now a 32-bit float.
 
-The motivation: the old type names tied Syntalos's stream system to one
-specific microcontroller protocol. Other devices (Open-Ephys digital I/O,
-DAQ TTL outputs, custom stim hardware) deal in the exact same conceptual
-shape — "set output X on hardware channel Y, optionally for time Z" — but
-required Firmata-specific naming to participate. The 3.0 types are
-protocol-agnostic; modules that emit or consume them work against any
-backend that implements the line semantics.
 
 ## 1. Porting Python modules & PyScript scripts
 
@@ -49,16 +38,16 @@ the identity of a hardware line and expose the operations valid for it.
 ```python
 import syntalos_mlink as syl
 
-fm_oport = syl.get_output_port('firmatactl-out')
+oport_fm = syl.get_output_port('firmatactl-out')
 
 def start():
     # register two pins
-    fm_oport.firmata_register_digital_pin(7, 'switch', is_output=False, is_pullup=True)
-    fm_oport.firmata_register_digital_pin(8, 'led1', is_output=True)
+    oport_fm.firmata_register_digital_pin(7, 'switch', is_output=False, is_pullup=True)
+    oport_fm.firmata_register_digital_pin(8, 'led1', is_output=True)
 
 def trigger():
-    fm_oport.firmata_submit_digital_pulse('led1', duration_msec=50)
-    fm_oport.firmata_submit_digital_value('led1', False)
+    oport_fm.firmata_submit_digital_pulse('led1', duration_msec=50)
+    oport_fm.firmata_submit_digital_value('led1', False)
 ```
 
 **After (3.0):**
@@ -66,11 +55,11 @@ def trigger():
 ```python
 import syntalos_mlink as syl
 
-fm_oport = syl.get_output_port('firmatactl-out')
+oport_fm = syl.get_output_port('firmatactl-out')
 
 # Capture identity once. Construction is side-effect-free.
-switch = syl.HwInputLine(fm_oport, line_id=7, pullup=True)
-led    = syl.HwOutputLine(fm_oport, line_id=8)
+switch = syl.HwInputLine(oport_fm, line_id=7, pullup=True)
+led    = syl.HwOutputLine(oport_fm, line_id=8)
 
 def start():
     # Explicitly register at every run
@@ -155,11 +144,15 @@ exact bit width:
 | `UInt16SignalBlock` | `SignalBlockU16` |
 
 This affects both C++ code and the Python `syl.DataType.*` constants.
+The `SignalBlockU16` is new in 3.0 and has no 2.x equivalent.
 
 ### Float precision change
 
 The precision of `SignalBlockF32` (formerly `FloatSignalBlock`) has changed from
 `double` (64-bit) to `float` (32-bit).
-This has some algorithmic advantages and matches what most DAQ systems output.
+This has some algorithmic advantages and matches what many DAQ systems output.
 Both `SignalBlockI32` and `SignalBlockF32` are now consistently 32-bit, which
 also allows further signal block types to be added more easily in the future.
+
+Reach out to us if you have a usecase that needs higher-precision floating point
+numbers as a stream data type!
