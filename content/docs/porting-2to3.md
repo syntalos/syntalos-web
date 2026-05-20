@@ -67,7 +67,7 @@ def start():
     led.send_mode()
 
 def trigger():
-    led.pulse(duration_msec=50)
+    led.pulse_msec(duration_msec=50)
     led.set_value(False)
 ```
 
@@ -92,7 +92,7 @@ Field renames in the inbound type:
 | `data.pin_id`     | `data.line_id`                                                      |
 | `data.pin_name`   | *removed* — match `data.line_id` against your `HwInputLine.line_id` |
 | `data.is_digital` | *removed* — the receiver already knows                              |
-| `data.value`      | `data.value` (now an integer up to 2^32)                            |
+| `data.value`      | `data.value` (now an unsigned 32-bit integer)                       |
 
 **Before (2.x):**
 
@@ -125,9 +125,18 @@ def on_new_line_reading(data):
 | `syl.new_firmatactl_with_name(kind, name)`            | *removed* — use `line_id`                      |
 
 Most user code should not need these; `HwOutputLine` / `HwInputLine` cover the
-common operations. The standalone constructor is still useful when you need
-a raw `LineCommand` (for example to fill in `extra` for a
-`DeviceSpecific` payload).
+common operations. If you construct raw commands, note that line setup is now
+`LineCommandKind.SET_MODE` plus `LineModeFlags`:
+
+```python
+cmd = syl.new_line_command(syl.LineCommandKind.SET_MODE, line_id=8)
+cmd.flags = syl.LineModeFlags.IS_OUTPUT
+oport_fm.submit(cmd)
+```
+
+Pulse durations live in `cmd.duration_usec`; `cmd.value` is only the line value
+or analog code. Device-specific payloads use `cmd.extra` together with
+`syl.LineCommandKind.DEVICE_SPECIFIC`.
 
 
 ## 2. Stream data type changes
@@ -141,9 +150,9 @@ exact bit width:
 |---------------------|------------------|
 | `FloatSignalBlock`  | `SignalBlockF32` |
 | `IntSignalBlock`    | `SignalBlockI32` |
-| `UInt16SignalBlock` | `SignalBlockU16` |
 
-This affects both C++ code and the Python `syl.DataType.*` constants.
+This affects C++ type names, Python classes such as `syl.SignalBlockF32()`, and
+the Python `syl.DataType.*` constants.
 The `SignalBlockU16` is new in 3.0 and has no 2.x equivalent.
 
 ### Float precision change
@@ -154,5 +163,5 @@ This has some algorithmic advantages and matches what many DAQ systems output.
 Both `SignalBlockI32` and `SignalBlockF32` are now consistently 32-bit, which
 also allows further signal block types to be added more easily in the future.
 
-Reach out to us if you have a usecase that needs higher-precision floating point
+Reach out to us if you have a use case that needs higher-precision floating point
 numbers as a stream data type!
