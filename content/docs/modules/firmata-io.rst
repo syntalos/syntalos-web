@@ -22,6 +22,12 @@ Configure as usual by setting a serial device to connect to.
 
 This module needs another module to be useful.
 
+Example wiring for manually controlling a Firmata device and reading values from it:
+
+.. image:: /images/modules/firmata-manual-control-wiring.avif
+  :height: 300
+  :alt: Syntalos wiring for manually reading from / writing to a Firmata device
+
 
 Ports
 =====

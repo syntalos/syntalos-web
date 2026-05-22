@@ -8,6 +8,7 @@ Syntalos 3.0 contains a small number of **breaking changes** that affect project
 authored against the 2.x series. This page summarizes what changed and how to
 migrate existing setups.
 
+
 ## At a glance
 
 - Stream types are now protocol-agnostic: `LineCommand` / `LineReading` replace
@@ -16,6 +17,7 @@ migrate existing setups.
   `pin_name`.
 - Python port helper APIs for `Line*` are redesigned as `syl.HwOutputLine` / `syl.HwInputLine`.
 - Signal block types are renamed to include their precision, and `SignalBlockF32` is now a 32-bit float.
+- The "Firmata User Control" (`firmata-userctl`) module has been renamed to "Manual Line Control" (`hwline-userctl`)
 
 
 ## 1. Porting Python modules & PyScript scripts

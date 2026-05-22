@@ -1,7 +1,7 @@
 ---
-title: Firmata User Control
+title: Manual HWLine Control
 ---
-.. image:: /images/modules-src/firmata-userctl/firmata-userctl.svg
+.. image:: /images/modules-src/hwline-userctl/hwline-userctl.svg
    :width: 80
    :align: right
 
@@ -15,9 +15,17 @@ Add manual outputs and raw data display controls in the module's display panel.
 Once an experiment is running, and the "Firmata User Control" is connected to a "Firmata IO" module
 with both its ports, data can be read from and written to the device.
 
-.. image:: /images/manual-firmata-control-dialog.avif
+.. image:: /images/modules/manual-hwline-control-dialog.avif
   :width: 480
   :alt: Manually reading Arduino pin values and writing to pins
+
+
+Example wiring for manually controlling a Firmata device and reading values from it:
+
+.. image:: /images/modules/firmata-manual-control-wiring.avif
+  :height: 300
+  :alt: Syntalos wiring for manually reading from / writing to a Firmata device
+
 
 See also:
 
