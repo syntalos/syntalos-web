@@ -16,8 +16,13 @@ migrate existing setups.
 - Hardware addressing in `Line*` is ID-based only: `line_id` replaces `pin_id` +
   `pin_name`.
 - Python port helper APIs for `Line*` are redesigned as `syl.HwOutputLine` / `syl.HwInputLine`.
+- Python **modules** declare their ports in code via `register_input_port()` /
+  `register_output_port()`; the `[ports]` table in `module.toml` is gone.
 - Signal block types are renamed to include their precision, and `SignalBlockF32` is now a 32-bit float.
-- The "Firmata User Control" (`firmata-userctl`) module has been renamed to "Manual Line Control" (`hwline-userctl`)
+- The "Firmata User Control" (`firmata-userctl`) module has been renamed to
+  "Manual Line Control" (`hwline-userctl`).
+- Public C/C++ APIs (libsyntalos-mlink, -datactl) no longer depend on Qt.
+  Out-of-tree C++ modules need to be ported and rebuilt against the new headers.
 
 
 ## 1. Porting Python modules & PyScript scripts
@@ -140,6 +145,24 @@ Pulse durations live in `cmd.duration_usec`; `cmd.value` is only the line value
 or analog code. Device-specific payloads use `cmd.extra` together with
 `syl.LineCommandKind.DEVICE_SPECIFIC`.
 
+### Declaring ports in Python modules
+
+For standalone Python modules (not PyScript snippets), ports are now declared
+in code at module construction time using `register_input_port()` /
+`register_output_port()` on the `SyntalosLink` object. The legacy
+`[ports]` table in `module.toml` is no longer read — remove it.
+
+```python
+import syntalos_mlink as syl
+
+class MyModule:
+    def __init__(self, modLink: syl.SyntalosLink):
+        self._iport = modLink.register_input_port(
+            'frames-in', 'Frames', syl.DataType.Frame)
+        self._oport = modLink.register_output_port(
+            'rows-out', 'Indices', syl.DataType.TableRow)
+```
+
 
 ## 2. Stream data type changes
 
@@ -167,3 +190,43 @@ also allows further signal block types to be added more easily in the future.
 
 Reach out to us if you have a use case that needs higher-precision floating point
 numbers as a stream data type!
+
+
+## 3. Porting C++ modules
+
+All public Syntalos libraries that out-of-tree modules link against —
+`libsyntalos-mlink`, `libsyntalos-datactl` and the data-streaming fabric —
+have been ported away from Qt and now depend only on GLib, the C/C++
+standard library and OpenCV/Eigen3. This makes the libraries easier to consume
+from non-Qt codebases and from Python, but it changes every public type that
+previously used Qt containers or string types.
+
+Out-of-tree C++ modules from the 2.x series **will not load** against 3.0 and
+need to be rebuilt against the new headers. The most common adjustments:
+
+- `QString` / `QByteArray` in public APIs are replaced by `std::string` and
+  `Syntalos::ByteVector`.
+- Stream metadata containers no longer use `QVariantHash`; use the new
+  metadata helpers in `datactl` instead.
+- Any code that handled `FirmataControl` / `FirmataData` needs to switch to
+  `LineCommand` / `LineReading`, identical in spirit to the Python port above.
+- Signal block C++ types follow the same rename as in section 2
+  (`FloatSignalBlock` → `SignalBlockF32`, `IntSignalBlock` → `SignalBlockI32`).
+
+The bundled module sources, the `example-mlink` template, and the
+`cpp-workbench` snippets are all up-to-date and make good references when
+porting your own modules.
+
+
+## 4. Renamed modules
+
+The "Firmata User Control" module has been renamed to "Manual Line Control"
+to reflect that it now operates on the protocol-agnostic `Line*` stream types
+and is no longer tied to Firmata specifically:
+
+| 2.x module id     | 3.0 module id     |
+|-------------------|-------------------|
+| `firmata-userctl` | `hwline-userctl`  |
+
+When opening a 2.x project that referenced `firmata-userctl`, Syntalos will
+report the old module as missing. Just add the new module instead.
