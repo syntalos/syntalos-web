@@ -35,14 +35,14 @@ No output streams are generated, but for input signal streams the
 following [stream metadata](../common-stream-metadata)
 keys are read and persisted as attributes on the resulting Zarr array:
 
-| Key            | Type            | Required?   | Description                                                            |
-|----------------|-----------------|-------------|------------------------------------------------------------------------|
-| `signal_names` | List\[String\]> | Recommended | List of signal names contained in each data block.                     |
-| `sample_rate`  | Double          | Recommended | Sampling rate in samples per second.                                   |
-| `time_unit`    | String          | No          | Unit of the data block timestamps. Persisted on the timestamps array.  |
-| `data_unit`    | String          | No          | Unit of the signal block values after the affine transform below.      |
-| `data_scale`   | Double          | No          | See [the affine contract](../common-stream-metadata) for `data_scale`. |
-| `data_offset`  | Double          | No          | See `data_scale`.                                                      |
+| Key            | Type           | Required?   | Description                                                            |
+|----------------|----------------|-------------|------------------------------------------------------------------------|
+| `signal_names` | List\[String\] | Recommended | List of signal names contained in each data block.                     |
+| `sample_rate`  | Double         | Recommended | Sampling rate in samples per second.                                   |
+| `time_unit`    | String         | No          | Unit of the data block timestamps. Persisted on the timestamps array.  |
+| `data_unit`    | String         | No          | Unit of the signal block values after the affine transform below.      |
+| `data_scale`   | Double         | No          | See [the affine contract](../common-stream-metadata) for `data_scale`. |
+| `data_offset`  | Double         | No          | See `data_scale`.                                                      |
 
 When the upstream module emits raw samples plus an affine scale/offset, the writer preserves the raw samples in the
 Zarr array and stores `data_scale` / `data_offset` as array attributes, so the conversion to physical units is
