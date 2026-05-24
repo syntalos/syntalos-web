@@ -92,7 +92,12 @@ making them distinguishable.
 
 ## Stream Metadata
 
-No output streams are generated, but input streams of type `SignalBlockF32`/`SignalBlockI32` must have
-`time_unit`, `data_unit` and `signal_names` set.
+No output streams are generated. Input signal streams of type `SignalBlockF32`/`SignalBlockI32` must have
+[`time_unit`, `data_unit` and `signal_names`]({{< ref "/docs/common-stream-metadata" >}}) set.
 
-For `TableRow` data, the `table_header` metadata entry has to be set.
+If the source advertises a raw→physical affine transform via
+`data_scale` / `data_offset` (see "[common stream metadata]({{< ref "/docs/common-stream-metadata" >}})"),
+those values are persisted as `data_scale` / `data_offset` attributes on the resulting EDL dataset so
+consumers can recover physical units from the recording.
+
+For `TableRow` data, the `table_header` metadata entry must be set.

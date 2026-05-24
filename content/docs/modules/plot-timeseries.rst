@@ -56,5 +56,10 @@ Ports
 Stream Metadata
 ===============
 
-No output streams are generated, but input streams must have ``time_unit``, ``data_unit`` and ``signal_names`` set.
-If the time unit is `index`, ``sample_rate`` also has to be set on the incoming channel.
+No output streams are generated. Input streams must have ``time_unit``, ``data_unit`` and ``signal_names`` set
+(see `Common Stream Metadata <{{< ref "/docs/common-stream-metadata" >}}>`_). If the time unit
+is ``index``, ``sample_rate`` also has to be set on the incoming channel.
+
+If the source stream advertises a raw→physical affine transform via ``data_scale`` and ``data_offset``,
+the canvas applies it on the fly (``displayed = data_scale * raw + data_offset``) and shows samples in
+the unit named by ``data_unit``. Streams that do not set these keys are displayed unchanged.
