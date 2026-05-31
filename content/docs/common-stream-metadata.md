@@ -1,6 +1,6 @@
 ---
 title: Common Stream Metadata
-weight: 15
+weight: 10
 ---
 
 Every Syntalos data stream carries a small key/value map of static metadata

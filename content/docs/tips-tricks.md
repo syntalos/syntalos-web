@@ -2,7 +2,7 @@
 title: Tips & Tricks
 prev: intro
 next: modules/_index
-weight: 10
+weight: 15
 ---
 
 This page contains semi-random tips and tricks that came up while using Syntalos and that other
