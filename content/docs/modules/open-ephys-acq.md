@@ -7,12 +7,6 @@ This module streams electrophysiology data from the [Open Ephys Acquisition Boar
 Check out [Differences Between Generations](https://open-ephys.github.io/acq-board-docs/User-Manual/Generations-differences.html)
 to see which hardware you have.
 
-{{< callout type="warning" >}}
-This module is currently in **beta** and made available only for testing purposes.
-For example, time synchronization is not yet fully implemented in a reliable way.
-Use it only for testing purposes until this note is removed!
-{{< /callout >}}
-
 
 ## Usage
 
@@ -41,6 +35,14 @@ The module also accepts a TTL trigger input port: connect an upstream
 module that emits `LineCommand` events, and the module fires the
 board's digital output lines accordingly. Only `WriteDigitalPulse`
 commands on lines 0–15 are honoured; other command kinds are ignored.
+
+### Wiring example
+
+![Wiring example for the OpenEphys AcqBoard Module](/images/modules/openephys-acq-wiring1.avif)
+
+The live plotted signals in a [Plot Time Series]({{< ref "plot-timeseries" >}}) module may look like this:
+
+![Plotting example for the OpenEphys AcqBoard](/images/modules/openephys-acq-signalplot1.avif)
 
 
 ## Output Data Format
@@ -73,6 +75,7 @@ headstage is replugged.
 | Headstage *<prefix>* 🠺       | Out       | `SignalBlockU16` | Electrode samples for one headstage.               |
 | Headstage *<prefix>* – AUX 🠺 | Out       | `SignalBlockU16` | AUX channels for one headstage (when enabled).     |
 | Board ADC 🠺                  | Out       | `SignalBlockU16` | Data from the on-board ADC inputs (when enabled).  |
+| TTL Input 🠺                  | Out       | `LineReading`    | Data from the on-board TTL inputs (when enabled).  |
 
 
 ## Stream Metadata
@@ -88,3 +91,4 @@ All output ports carry the
 | `data_unit`    | `µV` (the unit after the affine transform).                  |
 | `data_scale`   | The board's per-LSB conversion factor for this channel kind. |
 | `data_offset`  | `0.0`.                                                       |
+| `is_digital`   | `true`, only set for the digital TTL `LineReading` output.   |
