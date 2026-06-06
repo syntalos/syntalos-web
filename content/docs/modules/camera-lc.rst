@@ -10,9 +10,9 @@ webcam-like camera devices.
 This should work for standard USB UVC webcams, as well as more embedded cameras on devices such
 as the Raspberry Pi.
 
-For features ``libcamera`` does not yet support, it will try to talk
-directly to the `V4L2 API <https://en.wikipedia.org/wiki/Video4Linux>`_ for more advanced features
-(such as powerline frequency control).
+For features ``libcamera`` does not yet support, the module will try to talk
+directly to the `V4L2 API <https://en.wikipedia.org/wiki/Video4Linux>`_ to make them available
+(needed for e.g. powerline frequency control).
 
 
 Usage
