@@ -1,13 +1,18 @@
 ---
-title: OpenCV Camera
+title: Camera
 ---
-.. image:: /images/modules-src/camera-generic.svg
+.. image:: /images/modules-src/camera-lc/camera-lc.svg
    :width: 80
    :align: right
 
-The "OpenCV Camera" module can connect to any UVC webcam / V4L2 supported device that
-can be opened using `OpenCV <https://opencv.org/>`_.
-(This sometimes also includes industrial cameras for which no specialized drivers exist).
+The "Camera" module uses the modern `libcamera <https://libcamera.org/>`_ library to connect to
+webcam-like camera devices.
+This should work for standard USB UVC webcams, as well as more embedded cameras on devices such
+as the Raspberry Pi.
+
+For features ``libcamera`` does not yet support, it will try to talk
+directly to the `V4L2 API <https://en.wikipedia.org/wiki/Video4Linux>`_ for more advanced features
+(such as powerline frequency control).
 
 
 Usage
