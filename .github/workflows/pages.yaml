@@ -36,6 +36,9 @@ jobs:
           fetch-depth: 0  # fetch all history for .GitInfo and .Lastmod
           submodules: recursive
 
+      - name: Update APT cache
+        run: sudo apt-get update -qq
+
       - name: Install system prerequisites
         run: sudo apt-get install -yq
              git
