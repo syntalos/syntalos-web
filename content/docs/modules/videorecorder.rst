@@ -34,7 +34,9 @@ That depends on what kind of data you record. But here is a general rule of thum
 
 {{< callout type="info" >}}
 Remember to perform a test recording and play with the *Quality* or *Bitrate* settings for lossy codecs
-to get the optimal result: A high-quality recording at the lowest-possible filesize.
+to get the optimal result: A high-quality recording at the lowest-possible filesize. If possible, and your chosen codec
+supports it, start with a lossless recording to determine the baseline filesize. For favorable image noise levels
+and image dynamics, lossless encoding can provide enough compression.
 {{< /callout >}}
 
 
