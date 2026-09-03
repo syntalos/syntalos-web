@@ -27,7 +27,7 @@ normally read or write them directly.
 
 ## Signal / sample streams
 
-For one-dimensional time-series streams (`SignalBlockU16`,
+For one-dimensional time-series streams (`SignalBlockI16`, `SignalBlockU16`,
 `SignalBlockI32`, `SignalBlockF32`).
 
 | Key            | Type           | Default        | Description                                                                                                  |

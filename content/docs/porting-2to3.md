@@ -178,7 +178,9 @@ exact bit width:
 
 This affects C++ type names, Python classes such as `syl.SignalBlockF32()`, and
 the Python `syl.DataType.*` constants.
-The `SignalBlockU16` is new in 3.0 and has no 2.x equivalent.
+The 16-bit types `SignalBlockU16` (unsigned) and `SignalBlockI16` (signed) are new in the
+3.x series and have no 2.x equivalent. Both can be connected directly to `SignalBlockI32` and
+`SignalBlockF32` inputs; Syntalos converts the samples on the fly.
 
 ### Float precision change
 

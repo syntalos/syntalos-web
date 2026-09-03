@@ -23,10 +23,17 @@ read the array data.
 
 ## Ports
 
-| Name             | Direction | Data Type        | Description         |
-|------------------|-----------|------------------|---------------------|
-| 🠺Float64 Signals | In        | `SignalBlockF32` | Float signal data   |
-| 🠺Int32 Signals   | In        | `SignalBlockI32` | Integer signal data |
+Exactly one input port exists at a time, of the type selected in the module settings:
+
+| Name             | Direction | Data Type        | Description                                  |
+|------------------|-----------|------------------|----------------------------------------------|
+| 🠺Float32 Signals | In        | `SignalBlockF32` | Float signal data                            |
+| 🠺Int32 Signals   | In        | `SignalBlockI32` | Signed 32-bit integer signal data            |
+| 🠺Int16 Signals   | In        | `SignalBlockI16` | Signed 16-bit integer signal data            |
+| 🠺UInt16 Signals  | In        | `SignalBlockU16` | Unsigned 16-bit integer signal data          |
+| 🠺Line Readings   | In        | `LineReading`    | Digital line events, stored as [line, value] |
+
+The Zarr array uses the matching data type (`float32`, `int32`, `int16`, `uint16`; `uint32` for line readings).
 
 
 ## Stream Metadata

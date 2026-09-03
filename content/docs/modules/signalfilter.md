@@ -108,6 +108,8 @@ selected input type. Only one of the following pairs exists at a time:
 | F32 Filtered🠺 | Out       | `SignalBlockF32` | Filtered float signal           |
 | 🠺I32 Source   | In        | `SignalBlockI32` | Integer signal input            |
 | I32 Filtered🠺 | Out       | `SignalBlockI32` | Filtered integer signal         |
+| 🠺I16 Source   | In        | `SignalBlockI16` | Signed 16-bit signal input      |
+| I16 Filtered🠺 | Out       | `SignalBlockI16` | Filtered signed 16-bit signal   |
 | 🠺U16 Source   | In        | `SignalBlockU16` | Unsigned 16-bit signal input    |
 | U16 Filtered🠺 | Out       | `SignalBlockU16` | Filtered unsigned 16-bit signal |
 
