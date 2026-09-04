@@ -76,9 +76,9 @@ in the dataset attributes (the right choice when the Syntalos side is only used 
 SpikeGLX writes are never affected by this.
 
 {{< callout type="info" >}}
-If Syntalos module times out (about 10 seconds) when trying to connect to SpikeGLX, it may be Windows Firewall
-blocking access. You might try adding SpikeGLX to the allowed list of applications in the Firewall controls
-in Windows to resolve the issue.
+If the Syntalos module times out (about 10 seconds) when trying to connect to SpikeGLX, it may be the
+Windows Firewall blocking access. You can try adding SpikeGLX to the allowed list of applications in the
+Firewall controls in Windows to resolve the issue.
 {{< /callout >}}
 
 ### Run provenance
@@ -92,6 +92,11 @@ temporary runs, and copies SpikeGLX's complete parameter set into the Syntalos d
 This keeps runs comparable with each other later on. The metadata is sent immediately before the run starts.
 The Syntalos-side start time is found via `sy_collection_id` in the collection's own metadata.
 In *Monitor* mode Syntalos never writes anything to SpikeGLX, so the `.meta` files stay untouched.
+
+SpikeGLX keeps these keys for the rest of its own run and writes them into every file-set it closes, so the
+module blanks them again once the Syntalos run is over. A file-set recorded afterwards — in *Gate only* mode,
+where the SpikeGLX run outlives the Syntalos one — therefore carries empty `sy_*` entries instead of claiming
+to belong to this Syntalos run.
 
 ### Wiring example
 
