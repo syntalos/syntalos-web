@@ -66,6 +66,8 @@ The settings dialog has four groups:
   NI-DAQ, or `ALL`) and an optional channel subset relative to that group, e.g. `0:31,64`. Every entry
   becomes one output port, so ports exist even while SpikeGLX is offline and connections in the graph are
   kept.
+  For the digital groups `SY` and `DW` the subset selects *lines* instead of channels — see
+  [Digital lines](#digital-lines) below — so `6` picks just the imec sync waveform.
 
 Fetching a complete 384-channel AP band at 30 kHz needs roughly 23 MB/s of network bandwidth; select channel
 subsets when streaming more than one or two probes. *If Syntalos falls behind* selects what happens when
@@ -105,8 +107,9 @@ to belong to this Syntalos run.
 Here two live-data entries were configured, `imec0`/`AP` and `imec0`/`SY`, which is why the module shows
 the two output ports `imec0 AP` and `imec0 SY`. The AP band goes to a [Zarr Writer]({{< ref "zarrwriter" >}})
 that is set to the *Int16 Signals* input type, so the samples are stored exactly as SpikeGLX acquired them,
-and to a [Plot Time Series]({{< ref "plot-timeseries" >}}) module for live display, together with the sync
-bit on a second plot port.
+and to a [Plot Time Series]({{< ref "plot-timeseries" >}}) module for live display. The `SY` port carries
+[line events](#digital-lines) rather than samples, so it goes to a *Digital Lines* plot port (and, if the
+edge times should be recorded, to a Zarr Writer set to *Line Readings*).
 
 Note that none of this is needed to *record* the probe: SpikeGLX writes its own files regardless of whether
 any live-data entry is configured at all.
@@ -164,15 +167,65 @@ The module's dataset contains:
   recorded files on the SpikeGLX computer: `remote_data_dir`, `remote_run_dir`, `remote_file_prefix`,
   `remote_files` and the gate/trigger indices.
 
-Live data ports publish `SignalBlockI16` with the raw signed 16-bit sample values, exactly as SpikeGLX
-acquires them.  The metadata keys `data_unit`, `data_scale` and `data_offset` convert them to volts
-(`SY`/`DW` groups are published as raw digital words with `is_digital = true`), `signal_names` lists
-the channels (`AP0`, `AP1`, …), and the `spikeglx_*` keys identify the stream, channel group and absolute
-channel indices, see [Common Stream Metadata]({{< ref "/docs/common-stream-metadata" >}}).
+Analog live data ports publish `SignalBlockI16` with the raw signed 16-bit sample values, exactly as
+SpikeGLX acquires them. The metadata keys `data_unit`, `data_scale` and `data_offset` convert them to
+volts, `signal_names` lists the channels (`AP0`, `AP1`, …), and the `spikeglx_*` keys identify the stream,
+channel group and absolute channel indices, see
+[Common Stream Metadata]({{< ref "/docs/common-stream-metadata" >}}).
+
+Digital ports publish `LineReading` events instead, see [Digital lines](#digital-lines).
+
+
+### Digital lines
+
+The digital groups `SY` (probe and OneBox status word) and `DW` (NI-DAQ and OneBox digital lines) are not
+channels: SpikeGLX packs their lines into 16-bit words, with the lowest numbered line in the lowest order
+bit. A line is therefore numbered
+
+```
+lineIdx = word * 16 + bit
+```
+
+which is exactly the numbering SpikeGLX itself uses in its *Sync* and trigger settings. The **Channels**
+field of a live-data entry takes these line numbers for `SY` and `DW` entries, so `6` selects the imec sync
+waveform and an empty field selects every line of the group. Only the words that actually contain a
+selected line are fetched.
+
+Rather than a full-rate stream of packed words, these ports publish `LineReading` **events**: one event
+whenever a selected line changes level, plus one per line at the start of the run so its initial level is
+known. A 1 Hz sync waveform therefore produces two events per second instead of 30 000 samples, and the
+edge times are what matters anyway — the raw word is already in SpikeGLX's own files at full rate. The
+events carry `time_unit = "microseconds"` on the Syntalos master clock, `data_unit = "ttl"`,
+`is_digital = true`, and `spikeglx_lines` listing the published line numbers. They can be recorded by the
+[Zarr Writer]({{< ref "zarrwriter" >}}) and [JSON Writer]({{< ref "jsonwriter" >}}) modules, displayed by
+[Plot Time Series]({{< ref "plot-timeseries" >}}), and fed to any module taking line readings.
+
+The bits of an imec probe's `SY` word have fixed meanings:
+
+| Line | Meaning                                                              |
+|------|----------------------------------------------------------------------|
+| 0    | Acquisition start trigger received                                   |
+| 2    | COUNT error (communication)                                          |
+| 3    | SERDES error (communication)                                         |
+| 4    | LOCK error                                                           |
+| 5    | POP error (internal buffer overflow)                                 |
+| 6    | **Sync waveform** — this is the line to use for alignment            |
+| 7    | SYNC error — a communication error, *not* the sync waveform          |
+| 11   | MISS — this sample was zero-filled by SpikeGLX to replace a lost one |
+
+The remaining bits are unused. Quad-base probes (NP2020) record four `SY` words, one per shank, so shank
+*k*'s sync waveform is line `k * 16 + 6`; every other probe type has a single `SY` word. A OneBox `DW`
+word carries its 12 thresholded analog channels on lines 0–11. For NI-DAQ, the line number is the same
+`bit #N` that the SpikeGLX manual tells you to enter in a trigger setup, counting across both devices.
+See also: [SpikeGLX Metrics Help](https://billkarsh.github.io/SpikeGLX/Sgl_help/Metrics_Help.html)
+
+Selecting the `ALL` group is unaffected by any of this: it dumps every acquired channel of the stream,
+digital words included, as a signal block.
 
 
 ## Ports
 
-| Name                        | Direction | Data Type        | Description                                                |
-|-----------------------------|-----------|------------------|------------------------------------------------------------|
-| *<stream>* *<group>* 🠺      | Out       | `SignalBlockI16` | One port per live-data entry, e.g. `imec0 AP` (`imec0-ap`) |
+| Name                        | Direction | Data Type        | Description                                                     |
+|-----------------------------|-----------|------------------|------------------------------------------------------------------|
+| *<stream>* *<group>* 🠺      | Out       | `SignalBlockI16` | One port per analog live-data entry, e.g. `imec0 AP` (`imec0-ap`) |
+| *<stream>* *<group>* 🠺      | Out       | `LineReading`    | One port per digital (`SY`, `DW`) live-data entry, e.g. `imec0 SY` (`imec0-sy`) |
